@@ -63,10 +63,16 @@ export const checkoutRoute = createRoute({
   component: CheckoutPage,
 });
 
-// Rota de Confirmação do Pedido
+// Rota de Confirmação do Pedido (com e sem parâmetro)
 export const orderConfirmationRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/confirmacao/$orderId',
+  component: OrderConfirmationPage,
+});
+
+export const orderConfirmationBaseRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/confirmacao',
   component: OrderConfirmationPage,
 });
 
@@ -76,6 +82,7 @@ const routeTree = rootRoute.addChildren([
   cartRoute,
   checkoutRoute,
   orderConfirmationRoute,
+  orderConfirmationBaseRoute,
 ]);
 
 export const router = createRouter({
