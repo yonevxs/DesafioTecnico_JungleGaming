@@ -193,7 +193,7 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
 
           {/* Skeletons Shimmer */}
           {isLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
               {Array.from({ length: 6 }).map((_, idx) => (
                 <NftCardSkeleton key={idx} />
               ))}
@@ -217,9 +217,9 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
             </div>
           )}
 
-          {/* Cards Grid idêntico ao Figma */}
+          {/* Cards Grid idêntico ao Figma (2 colunas no mobile) */}
           {!isLoading && !isError && data && data.items.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
               {data.items.map((nft) => (
                 <NftCard key={nft.id} nft={nft} onSelect={onSelectNft} />
               ))}

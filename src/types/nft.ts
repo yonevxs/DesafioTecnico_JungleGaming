@@ -39,6 +39,9 @@ export interface NftItem {
   description: string;
   likesCount: number;
   isLiked?: boolean;
+  rarity?: string;
+  collection?: string;
+  attributes?: { trait_type: string; value: string }[];
   createdAt: string;
 }
 

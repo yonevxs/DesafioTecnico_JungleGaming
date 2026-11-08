@@ -48,11 +48,70 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-8 pb-16 lg:py-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+    <section className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-4 pb-8 sm:pt-8 sm:pb-16 lg:py-20">
+      
+      {/* 1. VERSÃO MOBILE (Figma Print Mobile / Home) */}
+      <div className="md:hidden">
+        <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-br from-[#4D321A] via-[#38220F] to-[#241612] border border-[#38220F] p-4 text-left shadow-xl">
+          <div className="flex items-center justify-between gap-3">
+            {/* Esquerda: Textos e CTA */}
+            <div className="flex-1 space-y-1.5 z-10">
+              <span className="text-[10px] text-[#CFB28C]/70 block font-mono">
+                Bem-vindo à Kurio
+              </span>
+              <h1 className="text-xs sm:text-sm font-bold text-[#CFB28C] leading-snug tracking-wide uppercase font-mono">
+                SEJA DONO DA CULTURA DIGITAL
+              </h1>
+              <p className="text-[9px] text-[#CFB28C]/80 leading-relaxed font-mono">
+                Descubra NFTs selecionados de criadores do mundo todo.
+              </p>
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={handleScrollToCatalog}
+                  className="text-[10px] font-bold text-[#E89B55] hover:text-[#D28A4C] flex items-center gap-1 font-mono cursor-pointer transition-colors"
+                >
+                  <span>EXPLORAR</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Direita: Imagens sobrepostas */}
+            <div className="relative w-28 h-28 shrink-0">
+              {/* Imagem Principal */}
+              <div className="w-24 h-24 rounded-2xl overflow-hidden bg-[#241612] ml-auto border border-[#38220F]/80 shadow-lg">
+                <img
+                  src="/assets/NFT Auth Artwork 8.png"
+                  alt="Emerald Ape #042"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Miniatura sobreposta no canto inferior esquerdo */}
+              <div className="absolute bottom-0 left-0 w-11 h-11 rounded-xl overflow-hidden border-2 border-[#140D0A] shadow-xl bg-[#241612]">
+                <img
+                  src="/assets/NFT Auth Artwork 9.png"
+                  alt="Sage Nomad #009"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pontos de paginação do carrossel */}
+          <div className="flex items-center justify-center gap-1.5 pt-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E89B55]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#38220F]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#38220F]" />
+          </div>
+        </div>
+      </div>
+
+      {/* 2. VERSÃO DESKTOP */}
+      <div className="hidden md:grid md:grid-cols-12 gap-10 lg:gap-12 items-center">
         
         {/* Left Column: Text & CTA com transição suave */}
-        <div className="lg:col-span-7 flex flex-col items-start space-y-6">
+        <div className="md:col-span-7 flex flex-col items-start space-y-6">
           <span className="text-xs sm:text-sm font-semibold tracking-wider text-[#CFB28C]/70 uppercase font-mono">
             Bem-vindo à Kurio
           </span>
@@ -96,7 +155,7 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Right Column: Hero Art Card com transição suave */}
-        <div className="lg:col-span-5 flex justify-center lg:justify-end">
+        <div className="md:col-span-5 flex justify-center lg:justify-end">
           <div className="relative w-full max-w-[420px] aspect-[4/4.5] sm:aspect-[4/4.3] rounded-3xl overflow-hidden bg-gradient-to-b from-[#241612] to-[#140D0A] p-2 sm:p-3 border border-[#38220F]/80 shadow-2xl shadow-black/60 group">
             <div
               key={`img-${currentSlide}`}

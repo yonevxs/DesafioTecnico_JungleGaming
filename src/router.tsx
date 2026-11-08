@@ -19,6 +19,7 @@ export interface HomeSearch {
 }
 
 import { AuthModal } from '@/components/auth/AuthModal';
+import { BottomNavigation } from '@/components/layout/BottomNavigation';
 
 // Root Route
 const rootRoute = createRootRoute({
@@ -26,6 +27,7 @@ const rootRoute = createRootRoute({
     <>
       <Outlet />
       <AuthModal />
+      <BottomNavigation />
     </>
   ),
 });
