@@ -1,4 +1,4 @@
-import api from './api';
+import { api } from './api';
 import { WalletFormData, SecondaryWalletData } from '@/types/wallet';
 
 const PRIMARY_WALLET_STORAGE_KEY = 'kurio_primary_wallet';
