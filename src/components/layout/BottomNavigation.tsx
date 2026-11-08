@@ -71,20 +71,20 @@ export const BottomNavigation: React.FC = () => {
       {/* Container Principal */}
       <div className="relative w-full max-w-md mx-auto h-[68px] pointer-events-auto">
         
-        {/* Background com Concavidade Curvada Suave (Figma Print 4) */}
+        {/* Background com Concavidade Curvada Suave e mais ampla (Figma Print) */}
         <svg
           viewBox="0 0 375 68"
           fill="none"
           preserveAspectRatio="none"
           className="absolute inset-0 w-full h-full drop-shadow-[0_-6px_20px_rgba(0,0,0,0.55)] pointer-events-none"
         >
-          {/* Fundo da barra com concavidade central */}
+          {/* Fundo da barra com concavidade ampla e gap suave */}
           <path
             d="M 0 18
                C 0 8, 8 0, 18 0
-               L 140 0
-               C 156 0, 164 33, 187.5 33
-               C 209 33, 219 0, 235 0
+               L 126 0
+               C 146 0, 156 43, 187.5 43
+               C 219 43, 229 0, 249 0
                L 357 0
                C 367 0, 375 8, 375 18
                L 375 68
@@ -96,9 +96,9 @@ export const BottomNavigation: React.FC = () => {
           <path
             d="M 0 18
                C 0 8, 8 0, 18 0
-               L 140 0
-               C 156 0, 164 33, 187.5 33
-               C 209 33, 219 0, 235 0
+               L 126 0
+               C 146 0, 156 43, 187.5 43
+               C 219 43, 229 0, 249 0
                L 357 0
                C 367 0, 375 8, 375 18"
             stroke="#38220F"
@@ -107,29 +107,29 @@ export const BottomNavigation: React.FC = () => {
           />
         </svg>
 
-        {/* Botão Central de Rastrear NFT aninhado na concavidade */}
+        {/* Botão Central de Rastrear NFT: Translúcido com Backdrop-blur e Ícone Maior */}
         <div className="absolute left-1/2 -top-6 -translate-x-1/2 z-20">
           <button
             type="button"
             onClick={handleCenterAction}
-            className="w-[52px] h-[52px] rounded-full bg-gradient-to-b from-[#D28A4C] to-[#B86B35] shadow-[0_0_24px_rgba(210,138,76,0.55)] flex items-center justify-center active:scale-95 transition-all cursor-pointer group"
+            className="w-14 h-14 rounded-full bg-gradient-to-b from-[#D28A4C]/75 to-[#B86B35]/70 backdrop-blur-md border border-[#F5A862]/30 shadow-[0_0_24px_rgba(210,138,76,0.4)] flex items-center justify-center active:scale-95 transition-all cursor-pointer group"
             aria-label="Rastrear NFT"
           >
-            {/* Ícone de Rastrear NFT (Scan/Viewfinder com duas metades e linha central) */}
+            {/* Ícone de Escaneamento Ampliado (Visor Óptico com brackets e linha central) */}
             <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
+              width="30"
+              height="30"
+              viewBox="0 0 30 30"
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth="2.2"
+              strokeWidth="2.4"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="group-hover:scale-105 transition-transform"
+              className="group-hover:scale-105 transition-transform drop-shadow-sm"
             >
-              <path d="M 6.5 9.5 C 6.5 7, 9 5.5, 12 5.5 C 15 5.5, 17.5 7, 17.5 9.5" />
-              <path d="M 6.5 14.5 C 6.5 17, 9 18.5, 12 18.5 C 15 18.5, 17.5 17, 17.5 14.5" />
-              <line x1="4.5" y1="12" x2="19.5" y2="12" />
+              <path d="M 6.5 11.5 V 9.5 C 6.5 7.5, 8 6, 10 6 H 20 C 22 6, 23.5 7.5, 23.5 9.5 V 11.5" />
+              <path d="M 6.5 18.5 V 20.5 C 6.5 22.5, 8 24, 10 24 H 20 C 22 24, 23.5 22.5, 23.5 20.5 V 18.5" />
+              <line x1="5" y1="15" x2="25" y2="15" />
             </svg>
           </button>
         </div>
