@@ -66,8 +66,10 @@ export const NftDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#140D0A] text-[#CFB28C] flex flex-col font-mono selection:bg-[#D28A4C] selection:text-[#140D0A] pb-28 md:pb-0 animate-in fade-in duration-300">
       
-      {/* Header com navegação SPA integrada */}
-      <Header />
+      {/* Header com navegação SPA integrada (Apenas Desktop - Mobile tem barra própria flutuante) */}
+      <div className="hidden md:block">
+        <Header />
+      </div>
 
       <main className="flex-grow">
         
@@ -111,14 +113,14 @@ export const NftDetailPage: React.FC = () => {
         {!isLoading && nft && (
           <>
             {/* 1. VISÃO MOBILE DEDICADA (Figma Print Mobile / Detalhes do NFT) */}
-            <div className="md:hidden px-4 pt-3 pb-6 space-y-4">
+            <div className="md:hidden max-w-md mx-auto px-4 pt-3 pb-36 space-y-3.5">
               
               {/* Top Navigation Overlay: Botão Voltar e Botão Favorito */}
               <div className="flex items-center justify-between pb-1">
                 <button
                   type="button"
                   onClick={() => navigate({ to: '/' })}
-                  className="w-10 h-10 rounded-full bg-[#241612]/80 backdrop-blur-md border border-[#38220F] text-[#CFB28C] flex items-center justify-center hover:text-[#E89B55] transition-all active:scale-95 cursor-pointer shadow-md"
+                  className="w-10 h-10 rounded-full bg-[#241612]/90 backdrop-blur-md border border-[#38220F] text-[#CFB28C] flex items-center justify-center hover:text-[#E89B55] transition-all active:scale-95 cursor-pointer shadow-lg"
                   aria-label="Voltar para a página inicial"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -127,7 +129,7 @@ export const NftDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleToggleLike}
-                  className="w-10 h-10 rounded-full bg-[#241612]/80 backdrop-blur-md border border-[#38220F] text-[#CFB28C] flex items-center justify-center hover:text-[#E89B55] transition-all active:scale-95 cursor-pointer shadow-md"
+                  className="w-10 h-10 rounded-full bg-[#241612]/90 backdrop-blur-md border border-[#38220F] text-[#CFB28C] flex items-center justify-center hover:text-[#E89B55] transition-all active:scale-95 cursor-pointer shadow-lg"
                   aria-label={nft.isLiked ? 'Desfavoritar' : 'Favoritar'}
                 >
                   <Heart
@@ -138,8 +140,8 @@ export const NftDetailPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Imagem Principal Arredondada */}
-              <div className="w-full aspect-square rounded-3xl overflow-hidden bg-[#241612] border border-[#38220F]/80 shadow-2xl">
+              {/* Imagem Principal Arredondada (Figma Print) */}
+              <div className="w-full aspect-square rounded-[28px] overflow-hidden bg-[#241612] border border-[#38220F]/80 shadow-2xl">
                 <img
                   src={nft.image}
                   alt={`${nft.name} ${nft.tokenId}`}
@@ -148,15 +150,15 @@ export const NftDetailPage: React.FC = () => {
               </div>
 
               {/* Card de Informações Arredondado */}
-              <div className="p-5 rounded-3xl bg-[#241612] border border-[#38220F] space-y-3.5 shadow-xl text-left">
+              <div className="p-5 rounded-[28px] bg-[#221510] border border-[#38220F] space-y-3.5 shadow-xl text-left">
                 
                 {/* Linha do Título e Avaliação */}
                 <div className="flex items-center justify-between gap-2">
-                  <h1 className="text-base font-bold text-[#CFB28C] tracking-wide">
+                  <h1 className="text-base font-bold text-[#FFF5EA] tracking-wide font-mono">
                     {nft.name} {nft.tokenId}
                   </h1>
 
-                  <div className="flex items-center gap-1 bg-[#140D0A]/60 border border-[#D28A4C]/40 px-2.5 py-0.5 rounded-full text-xs font-mono text-[#E89B55] shrink-0">
+                  <div className="flex items-center gap-1 bg-[#1A0F0A] border border-[#D28A4C]/50 px-2.5 py-0.5 rounded-full text-xs font-mono text-[#E89B55] shrink-0 font-bold">
                     <Star className="w-3.5 h-3.5 fill-[#E89B55] text-[#E89B55]" />
                     <span>4.8(19)</span>
                   </div>
@@ -170,12 +172,12 @@ export const NftDetailPage: React.FC = () => {
 
                 {/* Seleção de Edição */}
                 <div className="space-y-1.5 pt-1">
-                  <span className="text-xs font-bold text-[#CFB28C] block">
+                  <span className="text-xs font-bold text-[#FFF5EA] block font-mono">
                     Edição:
                   </span>
-                  <div className="flex flex-wrap gap-2 text-xs">
+                  <div className="flex items-center gap-2 text-xs">
                     {['1/10', '1/10', '1/50', 'ABERTA'].map((ed, idx) => {
-                      const isSelected = selectedEdition === ed && idx === 2; // Default 1/50 selecionada no print
+                      const isSelected = selectedEdition === ed && (idx === 2 || selectedEdition !== '1/50');
                       return (
                         <button
                           key={`${ed}-${idx}`}
@@ -183,7 +185,7 @@ export const NftDetailPage: React.FC = () => {
                           onClick={() => setSelectedEdition(ed)}
                           className={`px-3 py-1 rounded-full text-[11px] font-mono transition-all cursor-pointer ${
                             isSelected
-                              ? 'border border-[#D28A4C] text-[#E89B55] bg-[#D28A4C]/10 font-bold'
+                              ? 'border border-[#D28A4C] text-[#E89B55] bg-transparent font-bold'
                               : 'border border-[#38220F] text-[#CFB28C]/60 hover:text-[#CFB28C]'
                           }`}
                         >
@@ -195,17 +197,17 @@ export const NftDetailPage: React.FC = () => {
                 </div>
 
                 {/* Metadados Técnicos */}
-                <div className="pt-2 border-t border-[#38220F]/60 space-y-1.5 text-xs text-[#CFB28C]/70 font-mono">
+                <div className="pt-2 border-t border-[#38220F]/60 space-y-1.5 text-xs font-mono">
                   <p>
-                    <span className="text-[#CFB28C]/50">ID do token: </span>
+                    <span className="text-[#8E7563]">ID do token: </span>
                     <span className="text-[#CFB28C]">{nft.tokenId || '#0042'}</span>
                   </p>
                   <p>
-                    <span className="text-[#CFB28C]/50">Coleção: </span>
+                    <span className="text-[#8E7563]">Coleção: </span>
                     <span className="text-[#CFB28C]">{nft.collection || 'Kurio Apes'}</span>
                   </p>
                   <p>
-                    <span className="text-[#CFB28C]/50">Atributos: </span>
+                    <span className="text-[#8E7563]">Atributos: </span>
                     <span className="text-[#CFB28C]">
                       {nft.attributes?.map((a: { value: string }) => a.value).join(', ') || 'Óculos, Esmeralda, Raro'}
                     </span>
@@ -222,59 +224,63 @@ export const NftDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Barra Inferior Fixa de Compra (Mobile Bottom Action Bar) */}
-              <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#1A110E]/95 backdrop-blur-xl border-t border-[#38220F] px-4 py-3 shadow-2xl md:hidden font-mono">
-                
-                {/* Linha 1: Qtd. Stepper e Preço Total */}
-                <div className="flex items-center justify-between pb-2.5 text-xs">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-[#CFB28C]/80 font-bold">Qtd.</span>
-                    <button
-                      type="button"
-                      onClick={handleMobileMinus}
-                      disabled={mobileQty <= 1}
-                      className="w-5 h-5 rounded-full bg-[#D28A4C] hover:bg-[#E89B55] disabled:opacity-40 text-[#140D0A] flex items-center justify-center font-bold transition-all cursor-pointer"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="text-xs font-bold text-[#CFB28C] w-4 text-center">
-                      {mobileQty}
+              {/* Barra Inferior Fixa de Compra (Figma Print) */}
+              <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#1E120C] border-t border-[#38220F] rounded-t-3xl px-5 pt-3.5 pb-5 shadow-[0_-8px_30px_rgba(0,0,0,0.8)] md:hidden font-mono">
+                <div className="max-w-md mx-auto space-y-3">
+                  
+                  {/* Linha 1: Qtd. Stepper e Preço Total */}
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-[#CFB28C] font-medium">Qtd.</span>
+                      <button
+                        type="button"
+                        onClick={handleMobileMinus}
+                        disabled={mobileQty <= 1}
+                        className="w-6 h-6 rounded-full bg-[#D28A4C] hover:bg-[#E89B55] disabled:opacity-40 text-[#140D0A] flex items-center justify-center font-bold transition-all cursor-pointer active:scale-95 shadow-sm"
+                        aria-label="Diminuir quantidade"
+                      >
+                        <Minus className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </button>
+                      <span className="text-sm font-bold text-[#CFB28C] w-4 text-center font-mono">
+                        {mobileQty}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleMobilePlus}
+                        disabled={mobileQty >= 10}
+                        className="w-6 h-6 rounded-full bg-[#D28A4C] hover:bg-[#E89B55] disabled:opacity-40 text-[#140D0A] flex items-center justify-center font-bold transition-all cursor-pointer active:scale-95 shadow-sm"
+                        aria-label="Aumentar quantidade"
+                      >
+                        <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </button>
+                    </div>
+
+                    <span className="text-base font-bold text-[#D28A4C] font-mono tracking-wide">
+                      {totalEthPrice} ETH
                     </span>
+                  </div>
+
+                  {/* Linha 2: Botão Comprar NFT e Botão Carrinho */}
+                  <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      onClick={handleMobilePlus}
-                      disabled={mobileQty >= 10}
-                      className="w-5 h-5 rounded-full bg-[#D28A4C] hover:bg-[#E89B55] disabled:opacity-40 text-[#140D0A] flex items-center justify-center font-bold transition-all cursor-pointer"
+                      onClick={handleBuyNow}
+                      className="flex-1 h-12 bg-gradient-to-r from-[#D28A4C] to-[#C8783E] hover:from-[#E89B55] hover:to-[#D28A4C] text-[#140D0A] font-bold text-sm rounded-2xl transition-all active:scale-98 shadow-lg shadow-[#D28A4C]/20 flex items-center justify-center cursor-pointer font-mono tracking-wider"
                     >
-                      <Plus className="w-3 h-3" />
+                      Comprar NFT
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className="w-12 h-12 bg-[#291710] hover:bg-[#38220F] border border-[#432613] text-[#CFB28C] hover:text-[#E89B55] rounded-2xl flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md shrink-0"
+                      aria-label="Adicionar ao carrinho"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
                     </button>
                   </div>
 
-                  <span className="text-sm font-bold text-[#E89B55] font-mono">
-                    {totalEthPrice} ETH
-                  </span>
                 </div>
-
-                {/* Linha 2: Botão Comprar NFT e Botão Adicionar ao Carrinho */}
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={handleBuyNow}
-                    className="flex-1 bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold text-xs py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-[#D28A4C]/15 cursor-pointer font-mono tracking-wide"
-                  >
-                    Comprar NFT
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className="w-12 h-11 bg-[#241612] hover:bg-[#38220F] border border-[#38220F] text-[#CFB28C] hover:text-[#E89B55] rounded-xl flex items-center justify-center transition-all active:scale-95 cursor-pointer"
-                    aria-label="Adicionar ao carrinho"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                  </button>
-                </div>
-
               </div>
 
             </div>
@@ -348,8 +354,10 @@ export const NftDetailPage: React.FC = () => {
 
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer (Apenas Desktop) */}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
 
     </div>
   );
