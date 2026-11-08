@@ -125,4 +125,18 @@ export const authHandlers = [
       { id: 'w2', type: 'Coinbase Wallet', address: '0xA91F734b0291e921d7491823058912e82C', isPrimary: false },
     ]);
   }),
+
+  // PUT /api/wallets
+  http.put('/api/wallets', async ({ request }) => {
+    await delay(250);
+    const body = await request.json().catch(() => ({}));
+    return HttpResponse.json({ success: true, message: 'Carteiras atualizadas com sucesso', data: body }, { status: 200 });
+  }),
+
+  // POST /api/wallets
+  http.post('/api/wallets', async ({ request }) => {
+    await delay(250);
+    const body = await request.json().catch(() => ({}));
+    return HttpResponse.json({ success: true, message: 'Carteira cadastrada com sucesso', data: body }, { status: 201 });
+  }),
 ];

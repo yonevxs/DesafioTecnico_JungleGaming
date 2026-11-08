@@ -103,6 +103,12 @@ export const loginRoute = createRoute({
   component: HomePage,
 });
 
+export const carteirasRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/carteiras',
+  component: CollectorProfilePage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   nftDetailRoute,
@@ -113,6 +119,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   profileRoute,
   profileAltRoute,
+  carteirasRoute,
 ]);
 
 export const router = createRouter({
