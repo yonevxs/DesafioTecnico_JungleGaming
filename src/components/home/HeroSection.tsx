@@ -52,24 +52,74 @@ export const HeroSection: React.FC = () => {
       
       {/* 1. VERSÃO MOBILE (Figma Print Mobile / Home) */}
       <div className="md:hidden">
-        <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-br from-[#4D321A] via-[#38220F] to-[#241612] border border-[#38220F] p-4 text-left shadow-xl">
-          <div className="flex items-center justify-between gap-3">
-            {/* Esquerda: Textos e CTA */}
-            <div className="flex-1 space-y-1.5 z-10">
-              <span className="text-[10px] text-[#CFB28C]/70 block font-mono">
+        <div className="relative w-full rounded-[28px] overflow-hidden border border-[#4A2E19] p-5 sm:p-6 text-left shadow-2xl">
+          
+          {/* Fundo Estilizado Geométrico com Formas Curvas em Camadas (Figma Print Original) */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Base escuro chocolate */}
+            <div className="absolute inset-0 bg-[#29160C]" />
+
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 360 210"
+              fill="none"
+              preserveAspectRatio="none"
+            >
+              {/* Forma curva quente ampla à esquerda/centro */}
+              <ellipse
+                cx="155"
+                cy="105"
+                rx="105"
+                ry="140"
+                transform="rotate(-18 155 105)"
+                fill="#553218"
+              />
+              {/* Camada curva secundária de profundidade */}
+              <ellipse
+                cx="50"
+                cy="125"
+                rx="90"
+                ry="115"
+                fill="#432410"
+                opacity="0.9"
+              />
+              {/* Destaque sutil de brilho âmbar atrás do título */}
+              <circle
+                cx="110"
+                cy="70"
+                r="75"
+                fill="#6A3D1E"
+                opacity="0.35"
+              />
+              {/* Sombra de contraste atrás da arte do NFT à direita */}
+              <ellipse
+                cx="305"
+                cy="105"
+                rx="85"
+                ry="115"
+                fill="#1C0E07"
+                opacity="0.75"
+              />
+            </svg>
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between gap-4">
+            {/* Esquerda: Textos Maiores e CTA */}
+            <div className="flex-1 space-y-2.5">
+              <span className="text-xs sm:text-sm text-[#D28A4C] block font-mono font-medium tracking-wide">
                 Bem-vindo à Kurio
               </span>
-              <h1 className="text-xs sm:text-sm font-bold text-[#CFB28C] leading-snug tracking-wide uppercase font-mono">
-                SEJA DONO DA CULTURA DIGITAL
+              <h1 className="text-lg sm:text-xl font-bold text-[#FFF5EA] leading-[1.2] tracking-wide uppercase font-mono">
+                SEJA DONO DA<br />CULTURA DIGITAL
               </h1>
-              <p className="text-[9px] text-[#CFB28C]/80 leading-relaxed font-mono">
+              <p className="text-xs sm:text-[13px] text-[#CFB28C]/85 leading-relaxed font-mono max-w-[215px]">
                 Descubra NFTs selecionados de criadores do mundo todo.
               </p>
               <div className="pt-1">
                 <button
                   type="button"
                   onClick={handleScrollToCatalog}
-                  className="text-[10px] font-bold text-[#E89B55] hover:text-[#D28A4C] flex items-center gap-1 font-mono cursor-pointer transition-colors"
+                  className="text-xs sm:text-sm font-bold text-[#E89B55] hover:text-[#FFAF68] flex items-center gap-1.5 font-mono cursor-pointer transition-colors"
                 >
                   <span>EXPLORAR</span>
                   <span>→</span>
@@ -77,20 +127,20 @@ export const HeroSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Direita: Imagens sobrepostas */}
-            <div className="relative w-28 h-28 shrink-0">
-              {/* Imagem Principal */}
-              <div className="w-24 h-24 rounded-2xl overflow-hidden bg-[#241612] ml-auto border border-[#38220F]/80 shadow-lg">
+            {/* Direita: Imagens sobrepostas idênticas ao Figma */}
+            <div className="relative w-32 h-32 shrink-0">
+              {/* Imagem Principal (Ape com óculos de sol redondos e jaqueta bomber verde) */}
+              <div className="w-28 h-28 sm:w-30 sm:h-30 rounded-[22px] overflow-hidden bg-[#241612] ml-auto border border-[#4E2F18] shadow-xl">
                 <img
-                  src="/assets/NFT Auth Artwork 8.png"
+                  src="/assets/NFT Auth Artwork 9.png"
                   alt="Emerald Ape #042"
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Miniatura sobreposta no canto inferior esquerdo */}
-              <div className="absolute bottom-0 left-0 w-11 h-11 rounded-xl overflow-hidden border-2 border-[#140D0A] shadow-xl bg-[#241612]">
+              {/* Miniatura sobreposta no canto inferior esquerdo (Ape com chapéu bucket e moletom roxo) */}
+              <div className="absolute -bottom-1 -left-1.5 w-13 h-13 rounded-2xl overflow-hidden border-2 border-[#24140B] shadow-2xl bg-[#241612]">
                 <img
-                  src="/assets/NFT Auth Artwork 9.png"
+                  src="/assets/NFT Auth Artwork 10.png"
                   alt="Sage Nomad #009"
                   className="w-full h-full object-cover"
                 />
@@ -99,10 +149,10 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Pontos de paginação do carrossel */}
-          <div className="flex items-center justify-center gap-1.5 pt-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E89B55]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[#38220F]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[#38220F]" />
+          <div className="relative z-10 flex items-center justify-center gap-2 pt-4">
+            <span className="w-2 h-2 rounded-full bg-[#E89B55]" />
+            <span className="w-2 h-2 rounded-full bg-[#462913]" />
+            <span className="w-2 h-2 rounded-full bg-[#462913]" />
           </div>
         </div>
       </div>

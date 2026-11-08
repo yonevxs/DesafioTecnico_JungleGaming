@@ -66,42 +66,80 @@ export const BottomNavigation: React.FC = () => {
   }
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-auto">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
       
       {/* Container Principal */}
-      <div className="relative w-full max-w-md mx-auto">
+      <div className="relative w-full max-w-md mx-auto h-[68px] pointer-events-auto">
         
-        {/* FAB Central Flutuante com Símbolo Kurio (Elevado sobre a barra plana) */}
-        <div className="absolute left-1/2 -top-5 -translate-x-1/2 z-20">
+        {/* Background com Concavidade Curvada Suave (Figma Print 4) */}
+        <svg
+          viewBox="0 0 375 68"
+          fill="none"
+          preserveAspectRatio="none"
+          className="absolute inset-0 w-full h-full drop-shadow-[0_-6px_20px_rgba(0,0,0,0.55)] pointer-events-none"
+        >
+          {/* Fundo da barra com concavidade central */}
+          <path
+            d="M 0 18
+               C 0 8, 8 0, 18 0
+               L 140 0
+               C 156 0, 164 33, 187.5 33
+               C 209 33, 219 0, 235 0
+               L 357 0
+               C 367 0, 375 8, 375 18
+               L 375 68
+               L 0 68
+               Z"
+            fill="#1E120C"
+          />
+          {/* Borda sutil superior contornando a concavidade */}
+          <path
+            d="M 0 18
+               C 0 8, 8 0, 18 0
+               L 140 0
+               C 156 0, 164 33, 187.5 33
+               C 209 33, 219 0, 235 0
+               L 357 0
+               C 367 0, 375 8, 375 18"
+            stroke="#38220F"
+            strokeWidth="1"
+            fill="none"
+          />
+        </svg>
+
+        {/* Botão Central de Rastrear NFT aninhado na concavidade */}
+        <div className="absolute left-1/2 -top-6 -translate-x-1/2 z-20">
           <button
             type="button"
             onClick={handleCenterAction}
-            className="w-12 h-12 rounded-full bg-[#261712] border-2 border-[#D28A4C] shadow-[0_6px_20px_rgba(210,138,76,0.4)] flex items-center justify-center active:scale-95 transition-all cursor-pointer group"
-            aria-label="Explorar Coleções Kurio"
+            className="w-[52px] h-[52px] rounded-full bg-gradient-to-b from-[#D28A4C] to-[#B86B35] shadow-[0_0_24px_rgba(210,138,76,0.55)] flex items-center justify-center active:scale-95 transition-all cursor-pointer group"
+            aria-label="Rastrear NFT"
           >
+            {/* Ícone de Rastrear NFT (Scan/Viewfinder com duas metades e linha central) */}
             <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#CFB28C"
-              strokeWidth="1.8"
+              stroke="#FFFFFF"
+              strokeWidth="2.2"
               strokeLinecap="round"
-              className="group-hover:text-[#E89B55] group-hover:scale-105 transition-all"
+              strokeLinejoin="round"
+              className="group-hover:scale-105 transition-transform"
             >
-              <circle cx="12" cy="12" r="8.5" />
-              <line x1="7.5" y1="10" x2="16.5" y2="10" />
-              <line x1="7.5" y1="14" x2="16.5" y2="14" />
+              <path d="M 6.5 9.5 C 6.5 7, 9 5.5, 12 5.5 C 15 5.5, 17.5 7, 17.5 9.5" />
+              <path d="M 6.5 14.5 C 6.5 17, 9 18.5, 12 18.5 C 15 18.5, 17.5 17, 17.5 14.5" />
+              <line x1="4.5" y1="12" x2="19.5" y2="12" />
             </svg>
           </button>
         </div>
 
-        {/* Barra de Navegação Horizontal Plana (Sem recorte, com cantos superiores arredondados) */}
-        <nav className="h-16 bg-[#1F130E] border-t border-[#38220F]/60 rounded-t-3xl px-8 flex items-center justify-between shadow-2xl">
+        {/* Barra de Itens de Navegação (Alinhados aos lados da concavidade) */}
+        <nav className="relative z-10 h-[68px] px-8 flex items-center justify-between">
           
           {/* Lado Esquerdo: Home e Favoritos */}
           <div className="flex items-center space-x-10">
-            {/* 1. Home (Casinha geométrica preenchida) */}
+            {/* 1. Home (Casinha sólida âmbar) */}
             <button
               type="button"
               onClick={handleGoHome}
@@ -111,49 +149,51 @@ export const BottomNavigation: React.FC = () => {
               <svg width="22" height="20" viewBox="0 0 22 20" fill="none">
                 <path
                   d="M11 2L2.5 9V17C2.5 18.1046 3.39543 19 4.5 19H17.5C18.6046 19 19.5 18.1046 19.5 17V9L11 2Z"
-                  fill={isHome ? '#D28A4C' : 'none'}
-                  stroke={isHome ? '#D28A4C' : '#8C7361'}
+                  fill="#D28A4C"
+                  stroke="#D28A4C"
                   strokeWidth="1.8"
                   strokeLinejoin="round"
                 />
               </svg>
             </button>
 
-            {/* 2. Favoritos (Coração outline) */}
+            {/* 2. Favoritos (Coração) */}
             <button
               type="button"
               onClick={handleFavoritesClick}
-              className="p-1.5 text-[#8C7361] hover:text-[#D28A4C] transition-colors cursor-pointer"
+              className="p-1.5 transition-colors cursor-pointer text-[#CFB28C]/80 hover:text-[#D28A4C]"
               aria-label="Lista de interesse"
             >
-              <Heart className="w-5 h-5 stroke-[1.8]" />
+              <Heart className="w-5 h-5 fill-[#CFB28C]/20 stroke-[#CFB28C] stroke-[1.8]" />
             </button>
           </div>
 
-          {/* Espaço central reservado para o FAB */}
-          <div className="w-12" />
+          {/* Espaço central reservado para a concavidade e botão de rastrear */}
+          <div className="w-14" />
 
           {/* Lado Direito: Carrinho e Perfil */}
           <div className="flex items-center space-x-10">
-            {/* 3. Carrinho de compras com badge */}
+            {/* 3. Carrinho com badge */}
             <button
               type="button"
               onClick={() => navigate({ to: '/carrinho' })}
-              className="relative p-1.5 transition-colors cursor-pointer text-[#8C7361] hover:text-[#D28A4C]"
+              className="relative p-1.5 transition-colors cursor-pointer text-[#CFB28C]/80 hover:text-[#D28A4C]"
               aria-label="Carrinho"
             >
-              <ShoppingCart className={`w-5 h-5 stroke-[1.8] ${isCart ? 'text-[#D28A4C]' : 'text-[#8C7361]'}`} />
-              <span className="absolute -top-1.5 -right-2.5 bg-[#E89B55] text-[#140D0A] text-[9px] font-bold font-mono min-w-[17px] h-4 rounded-full flex items-center justify-center px-1 shadow-sm">
-                {totalCount > 0 ? totalCount : 6}
-              </span>
+              <ShoppingCart className={`w-5 h-5 stroke-[1.8] ${isCart ? 'text-[#D28A4C]' : 'text-[#CFB28C]/80'}`} />
+              {totalCount > 0 && (
+                <span className="absolute -top-1.5 -right-2 bg-[#E89B55] text-[#140D0A] text-[9px] font-bold font-mono min-w-[16px] h-4 rounded-full flex items-center justify-center px-1 shadow-sm">
+                  {totalCount}
+                </span>
+              )}
             </button>
 
-            {/* 4. Perfil outline */}
+            {/* 4. Perfil */}
             <button
               type="button"
               onClick={handleProfileClick}
               className={`p-1.5 transition-colors cursor-pointer ${
-                isProfile ? 'text-[#D28A4C]' : 'text-[#8C7361] hover:text-[#D28A4C]'
+                isProfile ? 'text-[#D28A4C]' : 'text-[#CFB28C]/80 hover:text-[#D28A4C]'
               }`}
               aria-label="Perfil do colecionador"
             >
