@@ -18,9 +18,16 @@ export interface HomeSearch {
   page?: number;
 }
 
+import { AuthModal } from '@/components/auth/AuthModal';
+
 // Root Route
 const rootRoute = createRootRoute({
-  component: () => <Outlet />,
+  component: () => (
+    <>
+      <Outlet />
+      <AuthModal />
+    </>
+  ),
 });
 
 // Index Route (Home)
@@ -76,6 +83,12 @@ export const orderConfirmationBaseRoute = createRoute({
   component: OrderConfirmationPage,
 });
 
+export const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: HomePage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   nftDetailRoute,
@@ -83,6 +96,7 @@ const routeTree = rootRoute.addChildren([
   checkoutRoute,
   orderConfirmationRoute,
   orderConfirmationBaseRoute,
+  loginRoute,
 ]);
 
 export const router = createRouter({

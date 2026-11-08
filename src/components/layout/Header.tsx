@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { Search, ShoppingCart, LogIn, Menu, X } from 'lucide-react';
+import { Search, ShoppingCart, LogIn, Menu, X, LogOut, User as UserIcon } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/context/AuthContext';
 
 interface HeaderProps {
   onSearchClick?: () => void;
@@ -21,8 +22,10 @@ export const Header: React.FC<HeaderProps> = ({
   const currentPath = routerState.location.pathname;
 
   const { totalCount } = useCart();
+  const { user, isAuthenticated, logout, openAuthModal } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   // Navegação suave entre seções e rotas
   const handleNav = (target: 'inicio' | 'mercado' | 'criadores' | 'aprenda') => {
@@ -201,15 +204,58 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </button>
 
-          {/* Login Button */}
-          <button
-            type="button"
-            onClick={onLoginClick}
-            className="flex items-center gap-2 bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md shadow-[#D28A4C]/10 font-mono"
-          >
-            <LogIn className="w-4 h-4" />
-            <span>Entrar</span>
-          </button>
+          {/* Login or User Profile */}
+          {isAuthenticated && user ? (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-2 bg-[#241612] hover:bg-[#38220F] border border-[#38220F] text-[#CFB28C] text-xs px-3.5 py-1.5 rounded-full transition-all duration-200 font-mono shadow-sm cursor-pointer"
+              >
+                <div className="w-6 h-6 rounded-full overflow-hidden bg-[#140D0A] shrink-0 border border-[#D28A4C]">
+                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                </div>
+                <span className="truncate max-w-[90px] font-semibold">{user.name.split(' ')[0]}</span>
+              </button>
+
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-[#241612] border border-[#38220F] rounded-xl shadow-2xl py-2 z-50 font-mono animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-4 py-2 border-b border-[#38220F]/60 text-xs">
+                    <p className="font-bold text-[#CFB28C] truncate">{user.name}</p>
+                    <p className="text-[10px] text-[#CFB28C]/60 truncate">{user.email}</p>
+                    {user.walletAddress && (
+                      <p className="text-[10px] text-[#E89B55] font-mono mt-1 truncate">
+                        {user.walletAddress.slice(0, 6)}...{user.walletAddress.slice(-4)}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUserDropdownOpen(false);
+                      logout();
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-[#140D0A] transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sair da conta</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                if (onLoginClick) onLoginClick();
+                else openAuthModal('login');
+              }}
+              className="flex items-center gap-2 bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md shadow-[#D28A4C]/10 font-mono cursor-pointer"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Entrar</span>
+            </button>
+          )}
 
           {/* Mobile Menu Hamburger */}
           <button

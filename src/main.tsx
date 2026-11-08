@@ -21,11 +21,15 @@ async function enableMocking() {
   });
 }
 
+import { AuthProvider } from './context/AuthContext';
+
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </QueryClientProvider>
     </React.StrictMode>
   );
