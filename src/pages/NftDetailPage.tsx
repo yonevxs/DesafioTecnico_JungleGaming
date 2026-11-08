@@ -149,16 +149,16 @@ export const NftDetailPage: React.FC = () => {
                 />
               </div>
 
-              {/* Card de Informações Arredondado */}
-              <div className="p-5 rounded-[28px] bg-[#221510] border border-[#38220F] space-y-3.5 shadow-xl text-left">
+              {/* Informações do NFT diretamente no primeiro background (Figma Print) */}
+              <div className="space-y-4 text-left px-1 pt-1">
                 
                 {/* Linha do Título e Avaliação */}
                 <div className="flex items-center justify-between gap-2">
-                  <h1 className="text-base font-bold text-[#FFF5EA] tracking-wide font-mono">
+                  <h1 className="text-base sm:text-lg font-bold text-[#FFF5EA] tracking-wide font-mono">
                     {nft.name} {nft.tokenId}
                   </h1>
 
-                  <div className="flex items-center gap-1 bg-[#1A0F0A] border border-[#D28A4C]/50 px-2.5 py-0.5 rounded-full text-xs font-mono text-[#E89B55] shrink-0 font-bold">
+                  <div className="flex items-center gap-1 bg-[#241612] border border-[#D28A4C]/50 px-2.5 py-0.5 rounded-full text-xs font-mono text-[#E89B55] shrink-0 font-bold">
                     <Star className="w-3.5 h-3.5 fill-[#E89B55] text-[#E89B55]" />
                     <span>4.8(19)</span>
                   </div>
@@ -171,7 +171,7 @@ export const NftDetailPage: React.FC = () => {
                 </p>
 
                 {/* Seleção de Edição */}
-                <div className="space-y-1.5 pt-1">
+                <div className="space-y-2 pt-0.5">
                   <span className="text-xs font-bold text-[#FFF5EA] block font-mono">
                     Edição:
                   </span>
@@ -197,7 +197,7 @@ export const NftDetailPage: React.FC = () => {
                 </div>
 
                 {/* Metadados Técnicos */}
-                <div className="pt-2 border-t border-[#38220F]/60 space-y-1.5 text-xs font-mono">
+                <div className="pt-2 space-y-1.5 text-xs font-mono">
                   <p>
                     <span className="text-[#8E7563]">ID do token: </span>
                     <span className="text-[#CFB28C]">{nft.tokenId || '#0042'}</span>
