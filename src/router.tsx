@@ -97,6 +97,12 @@ export const profileAltRoute = createRoute({
   component: CollectorProfilePage,
 });
 
+export const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: HomePage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   nftDetailRoute,

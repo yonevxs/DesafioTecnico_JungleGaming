@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from '@tanstack/react-router';
 import { router } from './router';
+import { AuthProvider } from './context/AuthContext';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -20,8 +21,6 @@ async function enableMocking() {
     onUnhandledRequest: 'bypass',
   });
 }
-
-import { AuthProvider } from './context/AuthContext';
 
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
