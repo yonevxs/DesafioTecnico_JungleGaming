@@ -66,95 +66,98 @@ export const BottomNavigation: React.FC = () => {
   }
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-auto">
       
-      {/* Container com fundo escuro e notch suave */}
-      <div className="relative max-w-md mx-auto w-full pointer-events-auto">
+      {/* Container Principal */}
+      <div className="relative w-full max-w-md mx-auto">
         
-        {/* FAB Central Flutuante com Símbolo Kurio */}
-        <div className="absolute left-1/2 -top-6 -translate-x-1/2 z-20">
+        {/* FAB Central Flutuante com Símbolo Kurio (Elevado sobre a barra plana) */}
+        <div className="absolute left-1/2 -top-5 -translate-x-1/2 z-20">
           <button
             type="button"
             onClick={handleCenterAction}
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-[#D28A4C] to-[#E89B55] p-0.5 shadow-xl shadow-[#D28A4C]/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer group"
-            aria-label="Explorar Coleções"
+            className="w-12 h-12 rounded-full bg-[#261712] border-2 border-[#D28A4C] shadow-[0_6px_20px_rgba(210,138,76,0.4)] flex items-center justify-center active:scale-95 transition-all cursor-pointer group"
+            aria-label="Explorar Coleções Kurio"
           >
-            <div className="w-full h-full rounded-full bg-[#38220F]/90 backdrop-blur-md flex items-center justify-center border border-[#CFB28C]/30">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-[#CFB28C] group-hover:text-[#E89B55] transition-colors"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="6" y1="9" x2="18" y2="9" />
-                <line x1="6" y1="15" x2="18" y2="15" />
-              </svg>
-            </div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#CFB28C"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              className="group-hover:text-[#E89B55] group-hover:scale-105 transition-all"
+            >
+              <circle cx="12" cy="12" r="8.5" />
+              <line x1="7.5" y1="10" x2="16.5" y2="10" />
+              <line x1="7.5" y1="14" x2="16.5" y2="14" />
+            </svg>
           </button>
         </div>
 
-        {/* Barra de Navegação Horizontal */}
-        <nav className="h-16 bg-[#1A110E]/95 backdrop-blur-xl border-t border-[#38220F]/80 rounded-t-3xl px-6 flex items-center justify-between shadow-2xl">
+        {/* Barra de Navegação Horizontal Plana (Sem recorte, com cantos superiores arredondados) */}
+        <nav className="h-16 bg-[#1F130E] border-t border-[#38220F]/60 rounded-t-3xl px-8 flex items-center justify-between shadow-2xl">
           
           {/* Lado Esquerdo: Home e Favoritos */}
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-10">
+            {/* 1. Home (Casinha geométrica preenchida) */}
             <button
               type="button"
               onClick={handleGoHome}
-              className={`p-2 transition-colors cursor-pointer ${
-                isHome ? 'text-[#E89B55]' : 'text-[#CFB28C]/60 hover:text-[#CFB28C]'
-              }`}
+              className="p-1.5 transition-colors cursor-pointer"
               aria-label="Início"
             >
-              <Home className={`w-5 h-5 ${isHome ? 'fill-current' : ''}`} />
+              <svg width="22" height="20" viewBox="0 0 22 20" fill="none">
+                <path
+                  d="M11 2L2.5 9V17C2.5 18.1046 3.39543 19 4.5 19H17.5C18.6046 19 19.5 18.1046 19.5 17V9L11 2Z"
+                  fill={isHome ? '#D28A4C' : 'none'}
+                  stroke={isHome ? '#D28A4C' : '#8C7361'}
+                  strokeWidth="1.8"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
 
+            {/* 2. Favoritos (Coração outline) */}
             <button
               type="button"
               onClick={handleFavoritesClick}
-              className="p-2 text-[#CFB28C]/60 hover:text-[#E89B55] transition-colors cursor-pointer"
+              className="p-1.5 text-[#8C7361] hover:text-[#D28A4C] transition-colors cursor-pointer"
               aria-label="Lista de interesse"
             >
-              <Heart className="w-5 h-5" />
+              <Heart className="w-5 h-5 stroke-[1.8]" />
             </button>
           </div>
 
           {/* Espaço central reservado para o FAB */}
-          <div className="w-14" />
+          <div className="w-12" />
 
           {/* Lado Direito: Carrinho e Perfil */}
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-10">
+            {/* 3. Carrinho de compras com badge */}
             <button
               type="button"
               onClick={() => navigate({ to: '/carrinho' })}
-              className={`relative p-2 transition-colors cursor-pointer ${
-                isCart ? 'text-[#E89B55]' : 'text-[#CFB28C]/60 hover:text-[#CFB28C]'
-              }`}
+              className="relative p-1.5 transition-colors cursor-pointer text-[#8C7361] hover:text-[#D28A4C]"
               aria-label="Carrinho"
             >
-              <ShoppingCart className={`w-5 h-5 ${isCart ? 'fill-current' : ''}`} />
-              {totalCount > 0 && (
-                <span className="absolute top-1 right-0 bg-[#E89B55] text-[#140D0A] text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center font-mono">
-                  {totalCount}
-                </span>
-              )}
+              <ShoppingCart className={`w-5 h-5 stroke-[1.8] ${isCart ? 'text-[#D28A4C]' : 'text-[#8C7361]'}`} />
+              <span className="absolute -top-1.5 -right-2.5 bg-[#E89B55] text-[#140D0A] text-[9px] font-bold font-mono min-w-[17px] h-4 rounded-full flex items-center justify-center px-1 shadow-sm">
+                {totalCount > 0 ? totalCount : 6}
+              </span>
             </button>
 
+            {/* 4. Perfil outline */}
             <button
               type="button"
               onClick={handleProfileClick}
-              className={`p-2 transition-colors cursor-pointer ${
-                isProfile ? 'text-[#E89B55]' : 'text-[#CFB28C]/60 hover:text-[#CFB28C]'
+              className={`p-1.5 transition-colors cursor-pointer ${
+                isProfile ? 'text-[#D28A4C]' : 'text-[#8C7361] hover:text-[#D28A4C]'
               }`}
               aria-label="Perfil do colecionador"
             >
-              <UserIcon className={`w-5 h-5 ${isProfile ? 'fill-current' : ''}`} />
+              <UserIcon className="w-5 h-5 stroke-[1.8]" />
             </button>
           </div>
 
