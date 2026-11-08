@@ -246,10 +246,7 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <button
               type="button"
-              onClick={() => {
-                if (onLoginClick) onLoginClick();
-                else openAuthModal('login');
-              }}
+              onClick={() => openAuthModal('login')}
               className="flex items-center gap-2 bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md shadow-[#D28A4C]/10 font-mono cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
@@ -315,6 +312,39 @@ export const Header: React.FC<HeaderProps> = ({
               {totalCount}
             </span>
           </button>
+
+          {/* Botão Mobile Login / Perfil */}
+          <div className="pt-2 border-t border-[#38220F]/60">
+            {isAuthenticated && user ? (
+              <div className="flex items-center justify-between py-1 text-xs">
+                <div className="flex items-center gap-2">
+                  <img src={user.avatar} alt={user.name} className="w-6 h-6 rounded-full object-cover border border-[#D28A4C]" />
+                  <span className="font-bold text-[#CFB28C]">{user.name}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="text-red-400 hover:text-red-300 font-bold"
+                >
+                  Sair
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openAuthModal('login');
+                }}
+                className="w-full bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold py-2.5 rounded-lg text-center"
+              >
+                Entrar
+              </button>
+            )}
+          </div>
         </div>
       )}
     </header>

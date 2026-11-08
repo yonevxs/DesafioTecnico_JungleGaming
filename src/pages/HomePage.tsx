@@ -37,7 +37,6 @@ export const HomePage: React.FC = () => {
       <Header
         searchQuery={searchParams.search || ''}
         onSearchChange={handleSearchChange}
-        onLoginClick={() => alert('Fluxo de login será implementado na tela de autenticação!')}
       />
 
       <main className="flex-grow">

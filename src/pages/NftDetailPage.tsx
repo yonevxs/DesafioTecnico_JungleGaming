@@ -19,9 +19,7 @@ export const NftDetailPage: React.FC = () => {
     <div className="min-h-screen bg-[#140D0A] text-[#CFB28C] flex flex-col font-mono selection:bg-[#D28A4C] selection:text-[#140D0A] animate-in fade-in duration-300">
       
       {/* Header com navegação SPA integrada */}
-      <Header
-        onLoginClick={() => alert('Fluxo de login será implementado na tela de autenticação!')}
-      />
+      <Header />
 
       <main className="flex-grow">
         
