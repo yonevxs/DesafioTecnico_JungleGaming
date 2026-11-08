@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from '@tanstack/react-router';
 
 export const Footer: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <footer className="w-full bg-[#140D0A] text-[#CFB28C] border-t border-[#38220F]/80">
       
@@ -28,7 +31,15 @@ export const Footer: React.FC = () => {
               Meu perfil
             </h4>
             <ul className="space-y-2 text-xs text-[#CFB28C]/70">
-              <li><a href="#" className="hover:text-[#E89B55] transition-colors">Meu perfil</a></li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: '/perfil' })}
+                  className="hover:text-[#E89B55] transition-colors cursor-pointer text-left"
+                >
+                  Meu perfil
+                </button>
+              </li>
               <li><a href="#" className="hover:text-[#E89B55] transition-colors">Minha coleção</a></li>
               <li><a href="#" className="hover:text-[#E89B55] transition-colors">Atividade</a></li>
               <li><a href="#" className="hover:text-[#E89B55] transition-colors">Estúdio do criador</a></li>

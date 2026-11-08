@@ -233,6 +233,17 @@ export const Header: React.FC<HeaderProps> = ({
                     type="button"
                     onClick={() => {
                       setUserDropdownOpen(false);
+                      navigate({ to: '/perfil' });
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs text-[#CFB28C] hover:bg-[#140D0A] transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <UserIcon className="w-3.5 h-3.5 text-[#D28A4C]" />
+                    <span>Meu perfil</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUserDropdownOpen(false);
                       logout();
                     }}
                     className="w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-[#140D0A] transition-colors flex items-center gap-2 cursor-pointer"

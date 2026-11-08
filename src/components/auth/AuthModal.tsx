@@ -115,10 +115,10 @@ export const AuthModal: React.FC = () => {
             </div>
 
             {/* Subtítulo */}
-            <p className="text-[11.5px] leading-relaxed text-[#CFB28C]/60 max-w-[320px] mx-auto">
+            <p className="text-[11.5px] leading-relaxed text-[#CFB28C]/60 max-w-[340px] mx-auto">
               {authModalTab === 'login'
                 ? 'Entre para gerenciar sua carteira, coleção e perfil de criador.'
-                : 'Crie sua conta para colecionar, transacionar e cunhar arte digital.'}
+                : 'Crie seu perfil de colecionador e conecte uma carteira quando quiser.'}
             </p>
           </div>
 
@@ -139,13 +139,13 @@ export const AuthModal: React.FC = () => {
           {/* Formulário */}
           <form onSubmit={handleSubmit} className="space-y-3.5">
             
-            {/* Campo Nome (Apenas Cadastro) */}
+            {/* Campo Nome de usuário (Apenas Cadastro - Figma Print 1) */}
             {authModalTab === 'register' && (
               <div className="space-y-1">
                 <input
                   type="text"
                   required
-                  placeholder="Nome completo"
+                  placeholder="Nome de usuário"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-[#140D0A] border border-[#38220F] focus:border-[#D28A4C] rounded-lg px-3.5 py-2.5 text-xs text-[#CFB28C] placeholder-[#CFB28C]/40 outline-none"
@@ -158,7 +158,7 @@ export const AuthModal: React.FC = () => {
               <input
                 type="email"
                 required
-                placeholder="contato@email.com"
+                placeholder={authModalTab === 'login' ? 'contato@email.com' : 'Digite seu e-mail'}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-[#140D0A] border border-[#38220F] focus:border-[#D28A4C] rounded-lg px-3.5 py-2.5 text-xs text-[#CFB28C] placeholder-[#CFB28C]/40 outline-none"
@@ -170,7 +170,7 @@ export const AuthModal: React.FC = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
-                placeholder="************"
+                placeholder={authModalTab === 'login' ? '************' : 'Senha'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-[#140D0A] border border-[#38220F] focus:border-[#D28A4C] rounded-lg px-3.5 py-2.5 pr-10 text-xs text-[#CFB28C] placeholder-[#CFB28C]/40 outline-none"
@@ -178,14 +178,14 @@ export const AuthModal: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#CFB28C]/50 hover:text-[#E89B55] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#CFB28C]/50 hover:text-[#E89B55] transition-colors cursor-pointer"
                 aria-label={showPassword ? 'Ocultar senha' : 'Exibir senha'}
               >
                 {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
               </button>
             </div>
 
-            {/* Campo Confirmar Senha (Apenas Cadastro) */}
+            {/* Campo Confirmar Senha (Apenas Cadastro - Figma Print 1) */}
             {authModalTab === 'register' && (
               <div className="space-y-1">
                 <input
@@ -199,7 +199,7 @@ export const AuthModal: React.FC = () => {
               </div>
             )}
 
-            {/* Link "Esqueceu a senha?" (Figma Print 1) */}
+            {/* Link "Esqueceu a senha?" (Apenas Login) */}
             {authModalTab === 'login' && (
               <div className="text-right pt-0.5">
                 <button

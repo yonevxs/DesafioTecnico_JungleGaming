@@ -83,10 +83,18 @@ export const orderConfirmationBaseRoute = createRoute({
   component: OrderConfirmationPage,
 });
 
-export const loginRoute = createRoute({
+import { CollectorProfilePage } from '@/pages/CollectorProfilePage';
+
+export const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/login',
-  component: HomePage,
+  path: '/perfil',
+  component: CollectorProfilePage,
+});
+
+export const profileAltRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/perfil-colecionador',
+  component: CollectorProfilePage,
 });
 
 const routeTree = rootRoute.addChildren([
@@ -97,6 +105,8 @@ const routeTree = rootRoute.addChildren([
   orderConfirmationRoute,
   orderConfirmationBaseRoute,
   loginRoute,
+  profileRoute,
+  profileAltRoute,
 ]);
 
 export const router = createRouter({
