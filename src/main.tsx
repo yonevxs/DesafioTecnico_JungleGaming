@@ -5,6 +5,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import { router } from './router';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import './services/socketService';
 import './index.css';
 
 const queryClient = new QueryClient({

@@ -16,41 +16,43 @@ class SocketService {
     if (this.isInitialized || typeof window === 'undefined') return;
     this.isInitialized = true;
 
-    try {
-      const socketUrl = window.location.origin;
-      this.socket = io(socketUrl, {
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionAttempts: 10,
-        reconnectionDelay: 1000,
-        timeout: 5000,
-      });
+    // Se houver servidor Socket.IO configurado via variável de ambiente, conecta
+    const socketUrl = (import.meta as any).env?.VITE_SOCKET_URL;
+    if (socketUrl) {
+      try {
+        this.socket = io(socketUrl, {
+          transports: ['websocket'],
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 2000,
+          timeout: 5000,
+        });
 
-      this.socket.on('connect', () => {
-        this.isConnected = true;
-        console.log('[SocketService] Conectado ao servidor Socket.IO');
-      });
+        this.socket.on('connect', () => {
+          this.isConnected = true;
+          console.log('[SocketService] Conectado ao servidor Socket.IO:', socketUrl);
+        });
 
-      this.socket.on('disconnect', (reason) => {
-        this.isConnected = false;
-        console.log('[SocketService] Desconectado do Socket.IO:', reason);
-      });
+        this.socket.on('disconnect', (reason) => {
+          this.isConnected = false;
+          console.log('[SocketService] Desconectado do Socket.IO:', reason);
+        });
 
-      this.socket.on('connect_error', () => {
-        // Conexão simulada via MSW/CustomEvent ativa
-      });
+        this.socket.on('nft.updated', (event: NftUpdatedEvent) => {
+          this.handleNftUpdated(event);
+        });
 
-      // Evento obrigatório: nft.updated
-      this.socket.on('nft.updated', (event: NftUpdatedEvent) => {
-        this.handleNftUpdated(event);
-      });
-
-      // Evento obrigatório: order.updated
-      this.socket.on('order.updated', (event: OrderUpdatedEvent) => {
-        this.handleOrderUpdated(event);
-      });
-    } catch (err) {
-      console.warn('[SocketService] Não foi possível iniciar o cliente Socket.IO:', err);
+        this.socket.on('order.updated', (event: OrderUpdatedEvent) => {
+          this.handleOrderUpdated(event);
+        });
+      } catch (err) {
+        console.warn('[SocketService] Não foi possível iniciar o cliente Socket.IO:', err);
+      }
+    } else {
+      // Modo de simulação local / MSW ativo: sem erros de conexão no console
+      this.isConnected = true;
+      console.log('[SocketService] ⚡ Modo de tempo real ativo via MSW/CustomEvent.');
+      console.log('[SocketService] Para testar no console, use: window.__kurio_emit_nft_update({ id: "emerald-ape-042", priceEth: "1.45" })');
     }
 
     // Ouvinte dual-channel de eventos via CustomEvent
@@ -61,6 +63,38 @@ class SocketService {
     window.addEventListener('kurio:socket:order.updated', ((e: CustomEvent<OrderUpdatedEvent>) => {
       this.handleOrderUpdated(e.detail);
     }) as EventListener);
+  }
+
+  /**
+   * Emite atualização de NFT simulada e propaga para todos os subscribers e UI
+   */
+  public emitNftUpdate(data: Partial<NftUpdatedEvent> & { id: string }) {
+    const event: NftUpdatedEvent = {
+      version: Date.now(),
+      timestamp: new Date().toISOString(),
+      ...data,
+    };
+    console.log('[SocketService] ⚡ Evento nft.updated disparado:', event);
+    this.handleNftUpdated(event);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('kurio:socket:nft.updated', { detail: event }));
+    }
+  }
+
+  /**
+   * Emite atualização de pedido simulada e propaga para todos os subscribers e UI
+   */
+  public emitOrderUpdate(data: Partial<OrderUpdatedEvent> & { orderId: string; status: 'pending' | 'confirmed' | 'failed' }) {
+    const event: OrderUpdatedEvent = {
+      version: Date.now(),
+      timestamp: new Date().toISOString(),
+      ...data,
+    };
+    console.log('[SocketService] ⚡ Evento order.updated disparado:', event);
+    this.handleOrderUpdated(event);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('kurio:socket:order.updated', { detail: event }));
+    }
   }
 
   private handleNftUpdated(event: NftUpdatedEvent) {
@@ -139,3 +173,16 @@ class SocketService {
 }
 
 export const socketService = new SocketService();
+
+// Inicializa e expõe funções no objeto global window para uso manual no console DevTools e testes
+if (typeof window !== 'undefined') {
+  socketService.init();
+
+  (window as any).__kurio_emit_nft_update = (data: Partial<NftUpdatedEvent> & { id: string }) => {
+    socketService.emitNftUpdate(data);
+  };
+
+  (window as any).__kurio_emit_order_update = (data: Partial<OrderUpdatedEvent> & { orderId: string; status: 'pending' | 'confirmed' | 'failed' }) => {
+    socketService.emitOrderUpdate(data);
+  };
+}
