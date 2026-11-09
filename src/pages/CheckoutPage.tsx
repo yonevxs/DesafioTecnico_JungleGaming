@@ -7,7 +7,22 @@ import { useCart } from '@/hooks/useCart';
 import { orderService } from '@/services/orderService';
 import { BlockchainNetwork } from '@/types/nft';
 import { WalletType, CollectorProfile } from '@/types/order';
-import { ChevronDown, AlertCircle, Loader2, Sparkles, Check } from 'lucide-react';
+import { ChevronDown, AlertCircle, Loader2, Sparkles, Check, ChevronLeft, MoreVertical, Wallet } from 'lucide-react';
+
+const CONNECTED_WALLETS = [
+  {
+    id: 'reserva',
+    name: 'Reserva',
+    address: 'nova.kurio.eth',
+    network: 'Rede Polygon',
+  },
+  {
+    id: 'principal',
+    name: 'Principal',
+    address: '0xA91F...E82C',
+    network: 'Rede principal Ethereum',
+  },
+];
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -40,11 +55,62 @@ export const CheckoutPage: React.FC = () => {
   });
 
   const [selectedWalletOption, setSelectedWalletOption] = useState<WalletType | 'all'>('Coinbase Wallet');
+  const [selectedConnectedWallet, setSelectedConnectedWallet] = useState('reserva');
+  const [selectedProvider, setSelectedProvider] = useState<'walletconnect' | 'metamask' | 'coinbase'>('coinbase');
   const [showPromoInput, setShowPromoInput] = useState(false);
   const [promoCodeInput, setPromoCodeInput] = useState('');
   const [promoError, setPromoError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleMobileConfirmOrder = async () => {
+    setErrorMessage(null);
+
+    if (items.length === 0) {
+      setErrorMessage('Seu carrinho está vazio. Adicione itens antes de finalizar a compra.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const idempotencyKey = `idemp-mob-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+      const chosenWallet = CONNECTED_WALLETS.find(w => w.id === selectedConnectedWallet) || CONNECTED_WALLETS[0];
+
+      const receipt = await orderService.createOrder({
+        idempotencyKey,
+        collector: {
+          displayName: 'Colecionador Kurio',
+          username: chosenWallet.name.toLowerCase(),
+          network: chosenWallet.network.includes('Polygon') ? 'Polygon' : 'Ethereum',
+          profileName: chosenWallet.name,
+          walletAddress: chosenWallet.address,
+          secondaryWalletOrEns: chosenWallet.address,
+          walletType: (selectedProvider === 'coinbase' ? 'Coinbase Wallet' : selectedProvider === 'metamask' ? 'MetaMask' : 'WalletConnect') as WalletType,
+          referralCode: 'KURIO-VIP-2026',
+          email: 'colecionador@kurio.eth',
+          ensName: chosenWallet.address.includes('.eth') ? chosenWallet.address : undefined,
+          useOtherWallet: false,
+          notes: 'Pagamento mobile com carteira conectada.',
+        },
+        items,
+        subtotalEth,
+        discountEth,
+        networkFeeEth,
+        totalEth,
+        couponCode: appliedCoupon?.code,
+      });
+
+      clearCart();
+      navigate({ to: '/confirmacao/$orderId', params: { orderId: receipt.orderId } });
+    } catch (err: any) {
+      setErrorMessage(
+        err.response?.data?.message || 'Falha ao processar o pagamento com carteira. Tente novamente.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleInputChange = (field: keyof CollectorProfile, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -138,13 +204,232 @@ export const CheckoutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#140D0A] text-[#CFB28C] flex flex-col font-mono selection:bg-[#D28A4C] selection:text-[#140D0A] animate-in fade-in duration-300">
       
-      {/* Header */}
-      <Header />
+      {/* Header (Apenas Desktop) */}
+      <div className="hidden md:block">
+        <Header />
+      </div>
 
       <main className="flex-grow">
         
-        {/* Breadcrumb: Início / Mercado / Pagamento */}
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-8 pb-4">
+        {/* 1. VISÃO MOBILE DEDICADA (Figma Print Mobile / Pagamento) */}
+        <div className="md:hidden flex flex-col min-h-screen px-4 pt-4 pb-12 space-y-5">
+          
+          {/* Top Navigation: Botão Voltar + Título "Pagamento com carteira" */}
+          <div className="flex items-center gap-4 pb-1">
+            <button
+              type="button"
+              onClick={() => navigate({ to: '/carrinho' })}
+              className="w-10 h-10 rounded-full bg-[#241612] border border-[#38220F] text-[#CFB28C] flex items-center justify-center hover:text-[#E89B55] transition-all active:scale-95 cursor-pointer shadow-md"
+              aria-label="Voltar para o carrinho"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-base sm:text-lg font-bold text-[#CFB28C] font-mono tracking-wide">
+              Pagamento com carteira
+            </h1>
+          </div>
+
+          {/* Mensagem de Erro se houver */}
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-red-950/50 border border-red-800 text-red-300 text-xs flex items-center gap-2 font-mono">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* Seção 1: Carteira conectada */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold text-[#FFF5EA] font-mono tracking-wide">
+                Carteira conectada
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedConnectedWallet(prev => prev === 'reserva' ? 'principal' : 'reserva');
+                }}
+                className="text-xs text-[#E89B55] hover:text-[#D28A4C] font-mono font-bold transition-colors cursor-pointer"
+              >
+                Trocar carteira
+              </button>
+            </div>
+
+            {/* Cards de Carteiras Conectadas */}
+            <div className="space-y-2.5">
+              {CONNECTED_WALLETS.map((wallet) => {
+                const isSelected = selectedConnectedWallet === wallet.id;
+                return (
+                  <div
+                    key={wallet.id}
+                    onClick={() => setSelectedConnectedWallet(wallet.id)}
+                    className={`rounded-2xl bg-[#241612] border transition-all p-4 flex items-start justify-between shadow-md cursor-pointer ${
+                      isSelected
+                        ? 'border-[#D28A4C]/60 bg-[#241612]'
+                        : 'border-[#38220F]/60 hover:border-[#38220F]'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3.5">
+                      {/* Radio Button Customizado */}
+                      <div className="mt-0.5">
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                          isSelected ? 'border-[#D28A4C]' : 'border-[#38220F]'
+                        }`}>
+                          {isSelected && <div className="w-2 h-2 rounded-full bg-[#D28A4C]" />}
+                        </div>
+                      </div>
+
+                      {/* Informações da Carteira */}
+                      <div className="space-y-0.5 text-left font-mono">
+                        <span className="text-xs font-bold text-[#FFF5EA] block">
+                          {wallet.name}
+                        </span>
+                        <span className="text-xs text-[#CFB28C]/70 block font-mono">
+                          {wallet.address}
+                        </span>
+                        <span className="text-[10px] text-[#CFB28C]/50 block">
+                          {wallet.network}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Botão de Opções ⋮ */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="text-[#CFB28C]/50 hover:text-[#CFB28C] p-1 transition-colors"
+                      aria-label="Opções da carteira"
+                    >
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Seção 2: Carteira e rede */}
+          <div className="space-y-2.5 pt-2">
+            <h2 className="text-xs font-bold text-[#FFF5EA] font-mono tracking-wide">
+              Carteira e rede
+            </h2>
+
+            {/* Provedores de Carteira */}
+            <div className="space-y-2.5">
+              {/* 1. WalletConnect */}
+              <div
+                onClick={() => setSelectedProvider('walletconnect')}
+                className={`rounded-2xl bg-[#241612] border transition-all p-3.5 flex items-center justify-between shadow-md cursor-pointer ${
+                  selectedProvider === 'walletconnect'
+                    ? 'border-[#D28A4C]/60'
+                    : 'border-[#38220F]/60 hover:border-[#38220F]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-[#1A100A] border border-[#38220F] flex items-center justify-center font-bold text-xs text-[#E89B55] font-mono">
+                    W
+                  </div>
+                  <span className="text-xs font-semibold text-[#CFB28C] font-mono">
+                    WalletConnect
+                  </span>
+                </div>
+
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                  selectedProvider === 'walletconnect' ? 'border-[#D28A4C]' : 'border-[#38220F]'
+                }`}>
+                  {selectedProvider === 'walletconnect' && <div className="w-2 h-2 rounded-full bg-[#D28A4C]" />}
+                </div>
+              </div>
+
+              {/* 2. MetaMask */}
+              <div
+                onClick={() => setSelectedProvider('metamask')}
+                className={`rounded-2xl bg-[#241612] border transition-all p-3.5 flex items-center justify-between shadow-md cursor-pointer ${
+                  selectedProvider === 'metamask'
+                    ? 'border-[#D28A4C]/60'
+                    : 'border-[#38220F]/60 hover:border-[#38220F]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-[#1A100A] border border-[#38220F] flex items-center justify-center font-bold text-xs text-[#E89B55] font-mono">
+                    M
+                  </div>
+                  <span className="text-xs font-semibold text-[#CFB28C] font-mono">
+                    MetaMask
+                  </span>
+                </div>
+
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                  selectedProvider === 'metamask' ? 'border-[#D28A4C]' : 'border-[#38220F]'
+                }`}>
+                  {selectedProvider === 'metamask' && <div className="w-2 h-2 rounded-full bg-[#D28A4C]" />}
+                </div>
+              </div>
+
+              {/* 3. Coinbase Wallet */}
+              <div
+                onClick={() => setSelectedProvider('coinbase')}
+                className={`rounded-2xl bg-[#241612] border transition-all p-3.5 flex items-center justify-between shadow-md cursor-pointer ${
+                  selectedProvider === 'coinbase'
+                    ? 'border-[#D28A4C]/60'
+                    : 'border-[#38220F]/60 hover:border-[#38220F]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-[#1A100A] border border-[#38220F] flex items-center justify-center text-[#E89B55]">
+                    <Wallet className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-semibold text-[#CFB28C] font-mono">
+                    Coinbase Wallet
+                  </span>
+                </div>
+
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${
+                  selectedProvider === 'coinbase' ? 'border-[#D28A4C]' : 'border-[#38220F]'
+                }`}>
+                  {selectedProvider === 'coinbase' && <div className="w-2 h-2 rounded-full bg-[#D28A4C]" />}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Total e Botão de Confirmação */}
+          <div className="pt-4 space-y-4 font-mono">
+            <div className="flex items-center justify-end gap-3 text-right">
+              <span className="text-xs font-bold text-[#CFB28C]">
+                Total:
+              </span>
+              <span className="text-base sm:text-lg font-bold text-[#E89B55] tracking-wide">
+                {totalEth} ETH
+              </span>
+            </div>
+
+            {/* Botão de Finalização */}
+            <button
+              type="button"
+              onClick={handleMobileConfirmOrder}
+              disabled={isSubmitting || items.length === 0}
+              className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#D28A4C] to-[#C8783E] hover:from-[#E89B55] hover:to-[#D28A4C] disabled:opacity-40 disabled:cursor-not-allowed text-[#140D0A] font-bold text-sm font-mono flex items-center justify-center tracking-wider shadow-lg shadow-[#D28A4C]/20 transition-all active:scale-98 cursor-pointer"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-[#140D0A]" />
+                  <span>Processando pagamento...</span>
+                </div>
+              ) : (
+                <span>Pagar com carteira</span>
+              )}
+            </button>
+          </div>
+
+        </div>
+
+        {/* 2. VISÃO DESKTOP (Preservada) */}
+        <div className="hidden md:block">
+          
+          {/* Breadcrumb: Início / Mercado / Pagamento */}
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-8 pb-4">
           <nav className="text-xs text-[#CFB28C]/60 flex items-center space-x-2">
             <button
               type="button"
@@ -626,13 +911,17 @@ export const CheckoutPage: React.FC = () => {
           </form>
         </section>
 
-        {/* Vantagens (W, C, D) + Newsletter (Figma Print 3) */}
-        <PerksSection />
+          {/* Vantagens (W, C, D) + Newsletter (Figma Print 3) */}
+          <PerksSection />
+
+        </div>
 
       </main>
 
-      {/* Footer (Figma Print 3) */}
-      <Footer />
+      {/* Footer (Apenas Desktop) */}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
 
     </div>
   );
