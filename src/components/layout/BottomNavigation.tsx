@@ -60,8 +60,13 @@ export const BottomNavigation: React.FC = () => {
     }
   };
 
-  // Na página de detalhes do NFT, o mobile exibe a barra fixa de compra exclusiva do produto (Print 2)
-  if (currentPath.startsWith('/nft/')) {
+  // Em rotas de produto e checkout, o mobile exibe suas barras de acao dedicadas
+  if (
+    currentPath.startsWith('/nft/') ||
+    currentPath === '/carrinho' ||
+    currentPath === '/pagamento' ||
+    currentPath.startsWith('/confirmacao')
+  ) {
     return null;
   }
 
