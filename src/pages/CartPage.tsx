@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { PerksSection } from '@/components/home/PerksSection';
 import { NftCard } from '@/components/home/NftCard';
 import { useCart } from '@/hooks/useCart';
+import { mockNfts } from '@/mocks/data/nfts';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, ChevronLeft } from 'lucide-react';
 
 export const CartPage: React.FC = () => {
