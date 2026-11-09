@@ -36,6 +36,9 @@ export const CheckoutPage: React.FC = () => {
     applyCoupon,
     removeCoupon,
     clearCart,
+    isQuoteOutdated,
+    quoteAlert,
+    reconfirmQuote,
   } = useCart();
 
   // Estados dos campos do formulário (vazios por padrão conforme Figma Print 1)
@@ -68,6 +71,13 @@ export const CheckoutPage: React.FC = () => {
 
     if (items.length === 0) {
       setErrorMessage('Seu carrinho está vazio. Adicione itens antes de finalizar a compra.');
+      return;
+    }
+
+    if (isQuoteOutdated) {
+      setErrorMessage(
+        'A cotação de itens no carrinho foi alterada na rede em tempo real. Por favor, revalide a cotação antes de prosseguir com o pagamento.'
+      );
       return;
     }
 
@@ -169,6 +179,13 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
 
+    if (isQuoteOutdated) {
+      setErrorMessage(
+        'A cotação de itens no carrinho foi alterada na rede em tempo real. Por favor, revalide a cotação antes de prosseguir com o pagamento.'
+      );
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -238,6 +255,23 @@ export const CheckoutPage: React.FC = () => {
             <div className="p-3.5 rounded-xl bg-red-950/50 border border-red-800 text-red-300 text-xs flex items-center gap-2 font-mono">
               <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
               <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* Alerta de Cotação em Tempo Real (Mobile) */}
+          {quoteAlert && (
+            <div className="p-3.5 rounded-2xl bg-amber-950/70 border border-[#D28A4C] text-[#FFF5EA] text-xs flex flex-col gap-2 font-mono shadow-lg animate-in slide-in-from-top-2">
+              <div className="flex items-start gap-2">
+                <span className="text-sm">⚡</span>
+                <p className="text-[11px] text-[#CFB28C] leading-relaxed">{quoteAlert}</p>
+              </div>
+              <button
+                type="button"
+                onClick={reconfirmQuote}
+                className="w-full bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold py-2 rounded-xl text-xs transition-all active:scale-95 text-center cursor-pointer"
+              >
+                Revalidar Cotação
+              </button>
             </div>
           )}
 
@@ -413,7 +447,7 @@ export const CheckoutPage: React.FC = () => {
             <button
               type="button"
               onClick={handleMobileConfirmOrder}
-              disabled={isSubmitting || items.length === 0}
+              disabled={isSubmitting || items.length === 0 || isQuoteOutdated}
               className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#D28A4C] to-[#C8783E] hover:from-[#E89B55] hover:to-[#D28A4C] disabled:opacity-40 disabled:cursor-not-allowed text-[#140D0A] font-bold text-sm font-mono flex items-center justify-center tracking-wider shadow-lg shadow-[#D28A4C]/20 transition-all active:scale-98 cursor-pointer"
             >
               {isSubmitting ? (
@@ -457,6 +491,26 @@ export const CheckoutPage: React.FC = () => {
 
         {/* Formulário Principal e Resumo */}
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-6">
+          {/* Alerta de Cotação em Tempo Real (Desktop) */}
+          {quoteAlert && (
+            <div className="mb-6 p-4 rounded-2xl bg-amber-950/60 border border-[#D28A4C] text-[#FFF5EA] text-xs flex items-center justify-between gap-4 font-mono shadow-lg animate-in slide-in-from-top-2">
+              <div className="flex items-center gap-3">
+                <span className="text-xl">⚡</span>
+                <div>
+                  <p className="font-bold text-[#E89B55]">Atualização em tempo real (Socket.IO)</p>
+                  <p className="text-[#CFB28C] text-xs mt-0.5">{quoteAlert}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={reconfirmQuote}
+                className="bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold px-5 py-2.5 rounded-xl text-xs transition-all active:scale-95 shrink-0 cursor-pointer shadow-md"
+              >
+                Revalidar Cotação
+              </button>
+            </div>
+          )}
+
           <form onSubmit={handleConfirmOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             
             {/* Coluna da Esquerda: "Perfil do colecionador" (Figma Print 1) */}
@@ -896,7 +950,7 @@ export const CheckoutPage: React.FC = () => {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting || items.length === 0}
+                  disabled={isSubmitting || items.length === 0 || isQuoteOutdated}
                   className="w-full bg-[#D28A4C] hover:bg-[#E89B55] disabled:opacity-50 disabled:cursor-not-allowed text-[#140D0A] font-bold text-xs sm:text-sm py-4 rounded-lg transition-all active:scale-95 shadow-lg shadow-[#D28A4C]/15 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (

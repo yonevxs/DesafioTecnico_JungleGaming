@@ -20,16 +20,24 @@ export interface HomeSearch {
 
 import { AuthModal } from '@/components/auth/AuthModal';
 import { BottomNavigation } from '@/components/layout/BottomNavigation';
+import { useSocketNftSync } from '@/hooks/useNfts';
 
-// Root Route
-const rootRoute = createRootRoute({
-  component: () => (
+// Componente Root com sincronização em tempo real Socket.IO
+const RootComponent: React.FC = () => {
+  useSocketNftSync();
+
+  return (
     <>
       <Outlet />
       <AuthModal />
       <BottomNavigation />
     </>
-  ),
+  );
+};
+
+// Root Route
+const rootRoute = createRootRoute({
+  component: RootComponent,
 });
 
 // Index Route (Home)

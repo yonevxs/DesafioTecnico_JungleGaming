@@ -23,6 +23,9 @@ export const CartPage: React.FC = () => {
     removeItem,
     applyCoupon,
     removeCoupon,
+    isQuoteOutdated,
+    quoteAlert,
+    reconfirmQuote,
   } = useCart();
 
   const [couponCode, setCouponCode] = useState('');
@@ -65,6 +68,23 @@ export const CartPage: React.FC = () => {
               Carrinho de NFTs
             </h1>
           </div>
+
+          {/* Alerta de Cotação em Tempo Real (Mobile) */}
+          {quoteAlert && (
+            <div className="mx-4 mb-3 p-3.5 rounded-2xl bg-amber-950/70 border border-[#D28A4C] text-[#FFF5EA] text-xs flex flex-col gap-2 font-mono shadow-lg animate-in slide-in-from-top-2">
+              <div className="flex items-start gap-2">
+                <span className="text-sm">⚡</span>
+                <p className="text-[11px] text-[#CFB28C] leading-relaxed">{quoteAlert}</p>
+              </div>
+              <button
+                type="button"
+                onClick={reconfirmQuote}
+                className="w-full bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold py-2 rounded-xl text-xs transition-all active:scale-95 text-center cursor-pointer"
+              >
+                Reconfirmar Cotação
+              </button>
+            </div>
+          )}
 
           {/* Lista de Cards de Itens no Carrinho */}
           <div className="px-4 space-y-3 pb-80 flex-1 overflow-y-auto">
@@ -265,6 +285,26 @@ export const CartPage: React.FC = () => {
             {/* Coluna da Esquerda: Tabela de Itens (Desktop: 8 colunas) */}
             <div className="lg:col-span-8 space-y-4">
               
+              {/* Alerta de Cotação em Tempo Real (Desktop) */}
+              {quoteAlert && (
+                <div className="p-4 rounded-2xl bg-amber-950/60 border border-[#D28A4C] text-[#FFF5EA] text-xs flex items-center justify-between gap-4 font-mono shadow-lg animate-in slide-in-from-top-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">⚡</span>
+                    <div>
+                      <p className="font-bold text-[#E89B55]">Atualização em tempo real (Socket.IO)</p>
+                      <p className="text-[#CFB28C] text-xs mt-0.5">{quoteAlert}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={reconfirmQuote}
+                    className="bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold px-5 py-2.5 rounded-xl text-xs transition-all active:scale-95 shrink-0 cursor-pointer shadow-md"
+                  >
+                    Reconfirmar Cotação
+                  </button>
+                </div>
+              )}
+
               {/* Cabeçalho da Tabela */}
               <div className="hidden sm:grid grid-cols-12 gap-4 text-xs font-bold text-[#CFB28C] pb-2 px-6">
                 <span className="col-span-6">NFTs</span>

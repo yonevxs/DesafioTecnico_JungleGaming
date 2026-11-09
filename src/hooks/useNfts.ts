@@ -85,3 +85,57 @@ export function useToggleNftLike() {
     },
   });
 }
+
+import { useEffect } from 'react';
+import { socketService } from '@/services/socketService';
+import { NftUpdatedEvent } from '@/types/socket';
+
+/**
+ * Hook global que sincroniza eventos nft.updated com o cache do TanStack Query
+ * garantindo atualização em tempo real no catálogo e na página de detalhes
+ */
+export function useSocketNftSync() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    socketService.init();
+
+    const unsubscribe = socketService.onNftUpdated((event: NftUpdatedEvent) => {
+      queryClient.setQueriesData({ queryKey: NFT_KEYS.lists() }, (oldData: any) => {
+        if (!oldData?.items) return oldData;
+        return {
+          ...oldData,
+          items: oldData.items.map((item: NftItem) => {
+            if (item.id === event.id) {
+              return {
+                ...item,
+                priceEth: event.priceEth ?? item.priceEth,
+                priceUsd: event.priceUsd ?? item.priceUsd,
+                availableQuantity: event.availableQuantity ?? item.availableQuantity,
+                totalQuantity: event.totalQuantity ?? item.totalQuantity,
+                isSoldOut: event.isSoldOut ?? item.isSoldOut,
+              };
+            }
+            return item;
+          }),
+        };
+      });
+
+      queryClient.setQueryData<NftItem>(NFT_KEYS.detail(event.id), (prevDetail) => {
+        if (!prevDetail) return prevDetail;
+        return {
+          ...prevDetail,
+          priceEth: event.priceEth ?? prevDetail.priceEth,
+          priceUsd: event.priceUsd ?? prevDetail.priceUsd,
+          availableQuantity: event.availableQuantity ?? prevDetail.availableQuantity,
+          totalQuantity: event.totalQuantity ?? prevDetail.totalQuantity,
+          isSoldOut: event.isSoldOut ?? prevDetail.isSoldOut,
+        };
+      });
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [queryClient]);
+}
