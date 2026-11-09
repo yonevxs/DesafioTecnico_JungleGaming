@@ -5,7 +5,6 @@ import { authHandlers } from './handlers/authHandlers';
 import { socketHandler } from './handlers/socketHandler';
 
 export const worker = setupWorker(
-  socketHandler,
   ...nftHandlers,
   ...orderHandlers,
   ...authHandlers

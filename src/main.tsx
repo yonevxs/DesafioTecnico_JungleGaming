@@ -23,8 +23,11 @@ async function enableMocking() {
   });
 }
 
-enableMocking().then(() => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
+const renderApp = () => {
+  const rootElement = document.getElementById('root');
+  if (!rootElement) return;
+
+  ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
@@ -35,4 +38,12 @@ enableMocking().then(() => {
       </QueryClientProvider>
     </React.StrictMode>
   );
-});
+};
+
+enableMocking()
+  .catch((err) => {
+    console.warn('[MSW] Worker não iniciado no browser, continuando renderização:', err);
+  })
+  .finally(() => {
+    renderApp();
+  });

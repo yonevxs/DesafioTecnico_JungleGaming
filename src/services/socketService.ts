@@ -36,6 +36,10 @@ class SocketService {
         console.log('[SocketService] Desconectado do Socket.IO:', reason);
       });
 
+      this.socket.on('connect_error', () => {
+        // Conexão simulada via MSW/CustomEvent ativa
+      });
+
       // Evento obrigatório: nft.updated
       this.socket.on('nft.updated', (event: NftUpdatedEvent) => {
         this.handleNftUpdated(event);
