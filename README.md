@@ -6,6 +6,7 @@ Solução desenvolvida para o **Frontend Challenge** da **Jungle Gaming** ([jung
 
 ## 🚀 Demonstração e Documentação
 
+- **Aplicação Publicada (Live Demo)**: [https://desafio-tecnico-jungle-gaming-seven.vercel.app](https://desafio-tecnico-jungle-gaming-seven.vercel.app)
 - **Repositório**: [yonevxs/DesafioTecnico_JungleGaming](https://github.com/yonevxs/DesafioTecnico_JungleGaming)
 - **Documentação de Arquitetura, Contratos REST/Socket e Decisões**: [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Relatórios de Auditoria Lighthouse (HTML/JSON)**: [lighthouse-reports/](./lighthouse-reports/)
