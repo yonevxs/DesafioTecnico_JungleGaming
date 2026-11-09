@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { orderService } from '@/services/orderService';
+import { socketService } from '@/services/socketService';
 import { OrderReceipt } from '@/types/order';
 import { mockNfts } from '@/mocks/data/nfts';
 import { X, ExternalLink } from 'lucide-react';
@@ -36,6 +37,28 @@ export const OrderConfirmationPage: React.FC = () => {
     }
 
     loadReceipt();
+
+    const unsubscribe = socketService.onOrderUpdated((event) => {
+      setReceipt((prev) => {
+        if (!prev || (orderId && event.orderId !== orderId && event.orderId !== prev.orderId)) {
+          return prev;
+        }
+        const nextStatus = event.status === 'failed' ? 'rejected' : event.status;
+        const updated: OrderReceipt = {
+          ...prev,
+          status: nextStatus,
+          transactionHash: event.transactionHash || prev.transactionHash,
+        };
+        try {
+          localStorage.setItem('kurio_last_receipt', JSON.stringify(updated));
+        } catch {}
+        return updated;
+      });
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, [orderId]);
 
   // Dados padrão conforme Figma caso não haja pedido prévio na sessão
@@ -147,9 +170,13 @@ export const OrderConfirmationPage: React.FC = () => {
             </svg>
           </div>
 
-          {/* Título */}
+          {/* Título dinâmico conforme status do pedido (confirmed / pending / rejected) */}
           <h2 className="text-xs sm:text-sm font-bold text-[#CFB28C] tracking-wide">
-            Seus NFTs agora estão na sua carteira
+            {currentReceipt.status === 'pending'
+              ? 'Processando confirmação na blockchain...'
+              : currentReceipt.status === 'rejected'
+              ? 'Transação recusada pela rede'
+              : 'Seus NFTs agora estão na sua carteira'}
           </h2>
         </div>
 

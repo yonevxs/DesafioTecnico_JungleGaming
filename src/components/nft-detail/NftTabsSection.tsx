@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Star, ThumbsUp, ThumbsDown, MessageSquare, Send } from 'lucide-react';
+import { Star, ThumbsUp, ThumbsDown, Send } from 'lucide-react';
 import { NftItem } from '@/types/nft';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface Review {
   id: string;
@@ -120,37 +121,23 @@ export const NftTabsSection: React.FC<NftTabsSectionProps> = ({ nft }) => {
 
   return (
     <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-10 border-t border-[#38220F]/60">
-      
-      {/* Abas */}
-      <div className="flex items-center space-x-8 border-b border-[#38220F]/60 pb-3 mb-8 text-sm font-mono">
-        <button
-          type="button"
-          onClick={() => setActiveTab('detalhes')}
-          className={`pb-2 transition-all font-semibold ${
-            activeTab === 'detalhes'
-              ? 'text-[#E89B55] border-b-2 border-[#E89B55]'
-              : 'text-[#CFB28C]/70 hover:text-[#CFB28C]'
-          }`}
-        >
-          Detalhes do NFT
-        </button>
+      <Tabs
+        value={activeTab}
+        onValueChange={(val) => setActiveTab(val as 'detalhes' | 'avaliacoes')}
+      >
+        {/* Abas shadcn/ui */}
+        <TabsList>
+          <TabsTrigger value="detalhes">
+            Detalhes do NFT
+          </TabsTrigger>
+          <TabsTrigger value="avaliacoes">
+            Avaliações de colecionadores ({reviews.length})
+          </TabsTrigger>
+        </TabsList>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('avaliacoes')}
-          className={`pb-2 transition-all font-semibold ${
-            activeTab === 'avaliacoes'
-              ? 'text-[#E89B55] border-b-2 border-[#E89B55]'
-              : 'text-[#CFB28C]/70 hover:text-[#CFB28C]'
-          }`}
-        >
-          Avaliações de colecionadores ({reviews.length})
-        </button>
-      </div>
-
-      {/* Conteúdo da Aba: Detalhes do NFT */}
-      {activeTab === 'detalhes' && (
-        <div className="flex flex-col space-y-5 text-xs sm:text-sm text-[#CFB28C]/80 leading-relaxed font-mono max-w-4xl">
+        {/* Conteúdo da Aba: Detalhes do NFT */}
+        <TabsContent value="detalhes">
+          <div className="flex flex-col space-y-5 text-xs sm:text-sm text-[#CFB28C]/80 leading-relaxed font-mono max-w-4xl">
           <p>
             {nft.name} {nft.tokenId} é uma obra digital 1/50 finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na {nft.network}. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.
           </p>
@@ -176,11 +163,11 @@ export const NftTabsSection: React.FC<NftTabsSectionProps> = ({ nft }) => {
             </div>
           </div>
         </div>
-      )}
+        </TabsContent>
 
-      {/* Conteúdo da Aba: Avaliações no Estilo Lista do YouTube */}
-      {activeTab === 'avaliacoes' && (
-        <div className="max-w-3xl flex flex-col space-y-8 font-mono">
+        {/* Conteúdo da Aba: Avaliações no Estilo Lista do YouTube */}
+        <TabsContent value="avaliacoes">
+          <div className="max-w-3xl flex flex-col space-y-8 font-mono">
           
           {/* Caixa de Entrada de Nova Avaliação (Estilo YouTube) */}
           <div className="flex items-start gap-4 pb-6 border-b border-[#38220F]/60">
@@ -339,8 +326,8 @@ export const NftTabsSection: React.FC<NftTabsSectionProps> = ({ nft }) => {
           </div>
 
         </div>
-      )}
-
+        </TabsContent>
+      </Tabs>
     </section>
   );
 };

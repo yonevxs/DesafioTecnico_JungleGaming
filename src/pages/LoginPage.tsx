@@ -25,7 +25,8 @@ export const LoginPage: React.FC = () => {
 
     try {
       await login({ email: email.trim(), password });
-      navigate({ to: '/perfil' });
+      const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/perfil';
+      navigate({ to: redirectTo as any });
     } catch (err: any) {
       setErrorMessage(
         err.response?.data?.message || 'Falha na autenticação. Verifique os dados inseridos.'
@@ -37,8 +38,9 @@ export const LoginPage: React.FC = () => {
     setErrorMessage(null);
     try {
       await loginWithSocial(provider);
-      navigate({ to: '/perfil' });
-    } catch (err: any) {
+      const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/perfil';
+      navigate({ to: redirectTo as any });
+    } catch {
       setErrorMessage(`Falha ao conectar com ${provider}. Tente novamente.`);
     }
   };

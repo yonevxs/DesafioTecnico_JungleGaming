@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Carrinho, Checkout e Confirmação de Pedido', () => {
+test.describe('Carrinho, Checkout, Idempotência e Confirmação de Pedido', () => {
   test.beforeEach(async ({ page }) => {
-    // Garante estado previsível do carrinho com itens antes de cada teste
     await page.addInitScript(() => {
       const defaultItems = [
         {
@@ -30,40 +29,44 @@ test.describe('Carrinho, Checkout e Confirmação de Pedido', () => {
     });
   });
 
-  test('deve exibir o carrinho com itens, subtotais e taxas de rede', async ({ page }) => {
+  test('5. deve exibir o carrinho com itens, subtotais, taxas e persistir após refresh', async ({ page }) => {
     await page.goto('/carrinho');
 
-    // Resumo da carteira (desktop) ou Carrinho de NFTs (mobile)
     await expect(page.getByText(/Resumo da carteira|Carrinho de NFTs/).filter({ visible: true }).first()).toBeVisible();
     await expect(page.getByText('Subtotal').filter({ visible: true }).first()).toBeVisible();
     await expect(page.getByText(/Taxa de rede/).filter({ visible: true }).first()).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByText(/Emerald Ape/i).filter({ visible: true }).first()).toBeVisible();
   });
 
-  test('deve aplicar cupom de desconto com sucesso', async ({ page }) => {
+  test('5b. deve aplicar cupom válido JUNGLE10 e rejeitar cupom EXPIRADO', async ({ page }) => {
     await page.goto('/carrinho');
 
     const couponInput = page.getByPlaceholder(/código promocional/i).filter({ visible: true }).first();
     await expect(couponInput).toBeVisible();
-    await couponInput.fill('JUNGLE10');
+
+    // Testa cupom expirado primeiro
+    await couponInput.fill('EXPIRADO');
     const applyBtn = page.getByRole('button', { name: 'Aplicar' }).filter({ visible: true }).first();
     await applyBtn.click();
+    await expect(page.getByText(/expirou/i).filter({ visible: true }).first()).toBeVisible();
 
-    // Deve exibir feedback de cupom aplicado
+    // Testa cupom válido
+    await couponInput.fill('JUNGLE10');
+    await applyBtn.click();
     await expect(page.getByText(/JUNGLE10|10%/).filter({ visible: true }).first()).toBeVisible({ timeout: 5000 });
   });
 
-  test('deve realizar fluxo completo de compra da navegação ao recibo', async ({ page }) => {
-    // 1. Acessa o carrinho e vai para o pagamento
+  test('6. deve realizar fluxo completo de compra da navegação ao recibo confirmado', async ({ page }) => {
     await page.goto('/carrinho');
     const checkoutButton = page.getByRole('button', { name: /Conectar e finalizar|Finalizar compra/i }).filter({ visible: true }).first();
     await expect(checkoutButton).toBeVisible();
     await checkoutButton.click();
 
-    // 2. Aguarda tela de pagamento
     await page.waitForURL(/\/pagamento/, { timeout: 10000 });
     await expect(page.getByText(/Perfil do colecionador|Pagamento com carteira/i).filter({ visible: true }).first()).toBeVisible();
 
-    // 3. Preenche dados de teste se em desktop
     const prefillBtn = page.getByRole('button', { name: /Preencher dados de teste/i }).filter({ visible: true }).first();
     if (await prefillBtn.isVisible()) {
       await prefillBtn.click();
@@ -73,8 +76,79 @@ test.describe('Carrinho, Checkout e Confirmação de Pedido', () => {
     await expect(payButton).toBeVisible();
     await payButton.click();
 
-    // 4. Deve ser redirecionado para a tela de confirmação
     await page.waitForURL(/\/confirmacao.*/, { timeout: 15000 });
     await expect(page.getByText(/Seus NFTs agora estão na sua carteira|Detalhes da transação|Etherscan/i).filter({ visible: true }).first()).toBeVisible();
+  });
+
+  test('7. deve validar idempotência de pedidos (mesma chave retorna mesmo pedido, chave com payload diferente retorna 409) e pagamento recusado', async ({ page }) => {
+    await page.goto('/pagamento');
+    await expect(page.getByText(/Perfil do colecionador|Pagamento com carteira/i).filter({ visible: true }).first()).toBeVisible();
+
+    const result = await page.evaluate(async () => {
+      const key = `test-idemp-${Date.now()}`;
+      const basePayload = {
+        idempotencyKey: key,
+        collector: {
+          displayName: 'Lucas',
+          username: 'lucas',
+          network: 'Ethereum',
+          profileName: 'Lucas',
+          walletAddress: '0x71C8360565ab8854E632310375776473060f641B',
+          walletType: 'MetaMask',
+          email: 'lucas@kurio.eth',
+        },
+        items: [],
+        subtotalEth: '1.25',
+        discountEth: '0.00',
+        networkFeeEth: '0.016',
+        totalEth: '1.266',
+      };
+
+      const res1 = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
+        body: JSON.stringify(basePayload),
+      });
+      const data1 = await res1.json();
+
+      // Mesma chave e mesmo payload -> 200 com mesmo orderId
+      const res2 = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
+        body: JSON.stringify(basePayload),
+      });
+      const data2 = await res2.json();
+
+      // Mesma chave com payload diferente -> 409 Conflict
+      const resConflict = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
+        body: JSON.stringify({ ...basePayload, totalEth: '9.999' }),
+      });
+
+      // Cenário de pagamento recusado -> 400
+      const resRejected = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': `${key}-rej` },
+        body: JSON.stringify({
+          ...basePayload,
+          collector: { ...basePayload.collector, email: 'recusar@teste.com' },
+        }),
+      });
+
+      return {
+        status1: res1.status,
+        status2: res2.status,
+        sameOrderId: data1.orderId === data2.orderId,
+        conflictStatus: resConflict.status,
+        rejectedStatus: resRejected.status,
+      };
+    });
+
+    expect(result.status1).toBe(201);
+    expect(result.status2).toBe(200);
+    expect(result.sameOrderId).toBe(true);
+    expect(result.conflictStatus).toBe(409);
+    expect(result.rejectedStatus).toBe(400);
   });
 });

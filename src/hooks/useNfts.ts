@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { nftService } from '@/services/nftService';
 import { NftQueryParams, NftItem } from '@/types/nft';
+import { socketService } from '@/services/socketService';
+import { NftUpdatedEvent } from '@/types/socket';
 
 export const NFT_KEYS = {
   all: ['nfts'] as const,
@@ -33,12 +36,14 @@ export function useToggleNftLike() {
   return useMutation({
     mutationFn: (id: string) => nftService.toggleLike(id),
     onMutate: async (id: string) => {
-      // Cancela queries concorrentes para evitar sobrescrita
+      // Cancela queries concorrentes para evitar condições de corrida
       await queryClient.cancelQueries({ queryKey: NFT_KEYS.detail(id) });
       await queryClient.cancelQueries({ queryKey: NFT_KEYS.lists() });
 
-      // Salva snapshot anterior do detalhe para rollback em caso de falha
+      // Salva snapshots anteriores para rollback seguro em caso de falha
       const prevDetail = queryClient.getQueryData<NftItem>(NFT_KEYS.detail(id));
+      const prevLists = queryClient.getQueriesData({ queryKey: NFT_KEYS.lists() });
+
       if (prevDetail) {
         const isLiked = !prevDetail.isLiked;
         queryClient.setQueryData<NftItem>(NFT_KEYS.detail(id), {
@@ -48,7 +53,7 @@ export function useToggleNftLike() {
         });
       }
 
-      // Atualiza optimisticamente também a listagem do catálogo
+      // Atualiza otimisticamente também a listagem do catálogo
       queryClient.setQueriesData({ queryKey: NFT_KEYS.lists() }, (oldData: any) => {
         if (!oldData?.items) return oldData;
         return {
@@ -67,16 +72,20 @@ export function useToggleNftLike() {
         };
       });
 
-      return { prevDetail };
+      return { prevDetail, prevLists };
     },
     onError: (_err, id, context) => {
-      // Rollback seguro em caso de erro
+      // Rollback seguro em caso de erro tanto no detalhe quanto nas listas
       if (context?.prevDetail) {
         queryClient.setQueryData(NFT_KEYS.detail(id), context.prevDetail);
       }
+      if (context?.prevLists) {
+        for (const [queryKey, data] of context.prevLists) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
     },
     onSuccess: (updatedNft, id) => {
-      // Atualiza com os dados reais confirmados pela API
       queryClient.setQueryData(NFT_KEYS.detail(id), updatedNft);
     },
     onSettled: (_data, _err, id) => {
@@ -86,13 +95,9 @@ export function useToggleNftLike() {
   });
 }
 
-import { useEffect } from 'react';
-import { socketService } from '@/services/socketService';
-import { NftUpdatedEvent } from '@/types/socket';
-
 /**
  * Hook global que sincroniza eventos nft.updated com o cache do TanStack Query
- * garantindo atualização em tempo real no catálogo e na página de detalhes
+ * e reconcilia recursos ativos após reconexão do Socket.IO (Seção 7)
  */
 export function useSocketNftSync() {
   const queryClient = useQueryClient();
@@ -100,7 +105,7 @@ export function useSocketNftSync() {
   useEffect(() => {
     socketService.init();
 
-    const unsubscribe = socketService.onNftUpdated((event: NftUpdatedEvent) => {
+    const unsubscribeNft = socketService.onNftUpdated((event: NftUpdatedEvent) => {
       queryClient.setQueriesData({ queryKey: NFT_KEYS.lists() }, (oldData: any) => {
         if (!oldData?.items) return oldData;
         return {
@@ -112,6 +117,7 @@ export function useSocketNftSync() {
                 priceEth: event.priceEth ?? item.priceEth,
                 priceUsd: event.priceUsd ?? item.priceUsd,
                 availableQuantity: event.availableQuantity ?? item.availableQuantity,
+                availableEditions: event.availableQuantity ?? item.availableEditions,
                 totalQuantity: event.totalQuantity ?? item.totalQuantity,
                 isSoldOut: event.isSoldOut ?? item.isSoldOut,
               };
@@ -128,14 +134,21 @@ export function useSocketNftSync() {
           priceEth: event.priceEth ?? prevDetail.priceEth,
           priceUsd: event.priceUsd ?? prevDetail.priceUsd,
           availableQuantity: event.availableQuantity ?? prevDetail.availableQuantity,
+          availableEditions: event.availableQuantity ?? prevDetail.availableEditions,
           totalQuantity: event.totalQuantity ?? prevDetail.totalQuantity,
           isSoldOut: event.isSoldOut ?? prevDetail.isSoldOut,
         };
       });
     });
 
+    // Reconcilia os recursos ativos com a API REST após reconexão (Seção 7)
+    const unsubscribeReconnect = socketService.onReconnect(() => {
+      queryClient.invalidateQueries({ queryKey: NFT_KEYS.all });
+    });
+
     return () => {
-      unsubscribe();
+      unsubscribeNft();
+      unsubscribeReconnect();
     };
   }, [queryClient]);
 }

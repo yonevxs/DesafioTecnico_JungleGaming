@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { X, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import { Dialog, DialogCloseButton } from '@/components/ui/dialog';
 
 export const AuthModal: React.FC = () => {
   const {
@@ -63,20 +64,19 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div className="hidden md:flex fixed inset-0 z-50 bg-[#140D0A]/80 backdrop-blur-sm items-center justify-center p-4 animate-in fade-in duration-200">
-      
-      {/* Container do Card Modal (Figma Print 1) */}
-      <div className="w-full max-w-[460px] bg-[#241612] border border-[#38220F] rounded-2xl relative shadow-2xl flex flex-col overflow-hidden font-mono text-[#CFB28C] animate-in zoom-in-95 duration-200">
-        
-        {/* Botão Fechar (✕) no topo direito */}
-        <button
-          type="button"
-          onClick={closeAuthModal}
-          className="absolute top-5 right-5 text-[#CFB28C]/60 hover:text-[#E89B55] transition-colors p-1 cursor-pointer"
-          aria-label="Fechar pop-up de login"
-        >
-          <X className="w-4 h-4" />
-        </button>
+    <Dialog
+      open={isAuthModalOpen}
+      onOpenChange={(open) => {
+        if (!open) closeAuthModal();
+      }}
+      ariaLabel={authModalTab === 'login' ? 'Entrar na Kurio' : 'Criar conta na Kurio'}
+      className="hidden md:flex"
+    >
+      {/* Botão Fechar (✕) no topo direito */}
+      <DialogCloseButton
+        onClick={closeAuthModal}
+        ariaLabel="Fechar pop-up de login"
+      />
 
         <div className="px-6 sm:px-8 pt-8 pb-7 space-y-5">
           
@@ -294,9 +294,6 @@ export const AuthModal: React.FC = () => {
 
         {/* Barra Laranja Inferior Conforme o Print */}
         <div className="h-1.5 w-full bg-[#D28A4C]" />
-
-      </div>
-
-    </div>
+    </Dialog>
   );
 };

@@ -38,7 +38,8 @@ export const RegisterPage: React.FC = () => {
         email: email.trim(),
         password,
       });
-      navigate({ to: '/perfil' });
+      const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/perfil';
+      navigate({ to: redirectTo as any });
     } catch (err: any) {
       setErrorMessage(
         err.response?.data?.message || 'Falha ao criar perfil. Tente novamente mais tarde.'
@@ -50,7 +51,8 @@ export const RegisterPage: React.FC = () => {
     setErrorMessage(null);
     try {
       await loginWithSocial(provider);
-      navigate({ to: '/perfil' });
+      const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/perfil';
+      navigate({ to: redirectTo as any });
     } catch (err: any) {
       setErrorMessage(`Falha ao conectar com ${provider}. Tente novamente.`);
     }

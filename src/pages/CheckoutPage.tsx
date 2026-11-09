@@ -35,7 +35,7 @@ export const CheckoutPage: React.FC = () => {
     appliedCoupon,
     applyCoupon,
     removeCoupon,
-    clearCart,
+    removePurchasedItems,
     isQuoteOutdated,
     quoteAlert,
     reconfirmQuote,
@@ -111,7 +111,7 @@ export const CheckoutPage: React.FC = () => {
         couponCode: appliedCoupon?.code,
       });
 
-      clearCart();
+      removePurchasedItems(items);
       try {
         navigate({ to: '/confirmacao/$orderId', params: { orderId: receipt.orderId } });
       } catch {
@@ -189,8 +189,8 @@ export const CheckoutPage: React.FC = () => {
     try {
       setIsSubmitting(true);
 
-      // Chave de idempotência única por transação
-      const idempotencyKey = `idemp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      const itemsSig = items.map(i => `${i.nft.id}:${i.quantity}`).join('-');
+      const idempotencyKey = `idemp-${formData.email.trim()}-${itemsSig}-${totalEth}`;
 
       const receipt = await orderService.createOrder({
         idempotencyKey,
@@ -208,8 +208,8 @@ export const CheckoutPage: React.FC = () => {
         couponCode: appliedCoupon?.code,
       });
 
-      // Limpa o carrinho após confirmação
-      clearCart();
+      // Remove do carrinho apenas os itens e quantidades comprados
+      removePurchasedItems(items);
 
       // Redireciona para o recibo / confirmação
       navigate({ to: '/confirmacao/$orderId', params: { orderId: receipt.orderId } });

@@ -1,27 +1,29 @@
 # Kurio — Marketplace de NFTs 🌐🎨
 
-Solução desenvolvida para o **Frontend Challenge** da **Jungle Gaming** ([junglegaming/frontend-challenge](https://github.com/junglegaming/frontend-challenge)), implementando a plataforma **Kurio NFT Marketplace** em React 19, TypeScript e Tailwind CSS, seguindo o design do Figma com total fidelidade visual, tempo real via Socket.IO, mocking nativo com MSW e testes automatizados com Playwright.
+Solução desenvolvida para o **Frontend Challenge** da **Jungle Gaming** ([junglegaming/frontend-challenge](https://github.com/junglegaming/frontend-challenge)), implementando a plataforma **Kurio NFT Marketplace** em React 19, TypeScript, Tailwind CSS e `shadcn/ui`, seguindo o design do Figma com fidelidade visual, tempo real via Socket.IO + MSW, e suíte de testes E2E com Playwright.
 
 ---
 
-## 🚀 Demonstração Rápida
+## 🚀 Demonstração e Documentação
 
 - **Repositório**: [yonevxs/DesafioTecnico_JungleGaming](https://github.com/yonevxs/DesafioTecnico_JungleGaming)
-- **Documentação de Arquitetura**: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **Documentação de Arquitetura, Contratos REST/Socket e Decisões**: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **Relatórios de Auditoria Lighthouse (HTML/JSON)**: [lighthouse-reports/](./lighthouse-reports/)
 
 ---
 
-## 🛠️ Stack Tecnológica
+## 🛠️ Stack Obrigatória Implementada
 
 | Camada | Tecnologia |
 |---|---|
-| **Interface & Componentes** | React 19, TypeScript, Tailwind CSS, Lucide Icons |
-| **Roteamento SPA** | TanStack Router (com Search Params tipados e rotas mobile dedicadas) |
-| **Estado Remoto & Cache** | TanStack Query v5 (atualização otimista, invalidação e rollback) |
-| **Cliente HTTP** | Axios com interceptors de autenticação e idempotência |
-| **Tempo Real** | Socket.IO Client + `@mswjs/socket.io-binding` |
-| **Mocking de Rede** | Mock Service Worker (MSW v2) |
+| **Interface & Componentes** | React 19, TypeScript, Tailwind CSS, `shadcn/ui` (`src/components/ui/*`), Lucide Icons |
+| **Roteamento SPA** | TanStack Router (com Search Params validados e sincronizados na URL) |
+| **Estado Remoto & Cache** | TanStack Query v5 (atualização otimista com rollback, invalidação e reconciliação) |
+| **Cliente HTTP** | Axios com interceptors de autenticação e chave de idempotência |
+| **Tempo Real** | `socket.io-client` + `@mswjs/socket.io-binding` |
+| **Mocking de Rede** | Mock Service Worker (MSW v2) na camada de Service Worker |
 | **Testes End-to-End** | Playwright (Desktop Chromium 1440x900 & Mobile Safari/Chrome 390x844) |
+| **Performance & Qualidade** | Lighthouse (Configuração versionada em `lighthouserc.json` e relatórios HTML/JSON) |
 
 ---
 
@@ -31,22 +33,24 @@ Solução desenvolvida para o **Frontend Challenge** da **Jungle Gaming** ([jung
 - **Node.js** >= 18.x
 - **npm** >= 9.x
 
-### 1. Clonar o repositório
+### 1. Clonar o repositório e instalar dependências
 ```bash
 git clone https://github.com/yonevxs/DesafioTecnico_JungleGaming.git
 cd DesafioTecnico_JungleGaming
+npm install
 ```
 
-### 2. Instalar dependências
-```bash
-npm install
+### 2. Variáveis de Ambiente (Opcional)
+A aplicação funciona out-of-the-box a partir de um checkout limpo com os mocks do MSW ativos por padrão. Caso deseje apontar o Socket.IO para um servidor externo:
+```env
+VITE_SOCKET_URL=http://localhost:5173
 ```
 
 ### 3. Iniciar o servidor de desenvolvimento
 ```bash
 npm run dev
 ```
-Acesse no seu navegador: **`http://localhost:5173`** (ou `http://127.0.0.1:5173`).
+Acesse no navegador: **`http://localhost:5173`** (ou `http://127.0.0.1:5173`).
 
 ---
 
@@ -56,44 +60,55 @@ Acesse no seu navegador: **`http://localhost:5173`** (ou `http://127.0.0.1:5173`
 |---|---|
 | `npm run dev` | Inicia o servidor Vite de desenvolvimento com os mocks do MSW ativos |
 | `npm run build` | Compila o bundle de produção otimizado com TypeScript |
-| `npm run preview` | Executa o preview local do build de produção |
-| `npm run test:e2e` | Executa toda a suíte de testes E2E do Playwright |
+| `npm run preview` | Executa o preview local do build de produção (`http://localhost:4173`) |
+| `npm run typecheck` | Executa a verificação estrita de tipos com TypeScript (`tsc -b --noEmit`) |
+| `npm run lint` | Executa o linter (Oxlint) no código-fonte |
+| `npm run test:e2e` | Executa toda a suíte de testes E2E do Playwright (Desktop e Mobile) |
 | `npm run test:e2e:ui` | Abre a interface interativa do Playwright Test Runner |
 | `npm run test:e2e:report` | Abre o relatório HTML de execução dos testes E2E |
-| `npm run lint` | Executa o linter (Oxlint) no código-fonte |
+| `npm run lighthouse` | Exibe o resumo da auditoria Lighthouse (3 execuções por perfil/página) |
 
 ---
 
 ## 👤 Credenciais Fictícias para Avaliação
 
-Para facilitar a avaliação da autenticação, utilize as seguintes credenciais simuladas:
-
 | Campo | Valor Sugerido |
 |---|---|
-| **E-mail** | `contato@email.com` ou `colecionador@kurio.eth` |
-| **Senha** | `kurio2026pass` (qualquer senha com 6+ caracteres é aceita) |
-| **Nome de Usuário** | `lucasneves_eth` |
-| **Login Social** | Clique em **"Continuar com Google"** ou **"Continuar com Facebook"** para login automático com perfil preenchido |
+| **Usuário 1 (E-mail)** | `contato@email.com` |
+| **Usuário 2 (E-mail)** | `colecionador@kurio.eth` |
+| **Senha** | `kurio2026pass` (qualquer senha com 6+ caracteres) |
+| **Login Social** | Botões **"Continuar com Google"** ou **"Continuar com Facebook"** |
 
 ---
 
-## 🎟️ Cupons Promocionais de Teste
+## 🎟️ Cupons Promocionais e Cenários Determinísticos de Falha / Rede
 
-No carrinho de compras (`/carrinho`), teste os cupons:
+Para reproduzir todos os fluxos de sucesso, erro e borda exigidos pelo edital:
 
+### 1. Cupons no Carrinho (`/carrinho` e `/pagamento`)
 - `JUNGLE10`: 10% de desconto especial Jungle Gaming
 - `KURIO20`: 20% de desconto da comunidade Kurio
 - `GENESIS5`: 5% de desconto de lançamento
-- `EXPIRADO`: Simula cupom rejeitado por expiração
+- `EXPIRADO`: Simula cupom expirado/rejeitado (HTTP 422)
+
+### 2. Reproduzindo Cenários de Falha (MSW)
+- **Pagamento Recusado (HTTP 400)**: Na tela `/pagamento`, informe um e-mail contendo `recusar` (ex.: `recusar@teste.com`). O pedido é rejeitado, exibindo alerta de erro e preservando os itens no carrinho.
+- **Conflito de Idempotência (HTTP 409)**: Enviar `POST /api/orders` reutilizando a mesma header `Idempotency-Key` com itens ou valores diferentes retorna `409 Conflict` (`IDEMPOTENCY_CONFLICT`). A mesma chave com o mesmo payload recupera o pedido original (`200 OK`).
+- **Conflito de Cadastro (HTTP 409)**: Em `/cadastro`, utilize um e-mail contendo `conflito` (ex.: `conflito@kurio.eth`).
+- **Falha de Autenticação (HTTP 401)**: Em `/login`, utilize um e-mail contendo `erro` ou senha `errada`.
+- **Rollback Otimista de Favoritos (HTTP 500)**: No console, execute `localStorage.setItem('kurio_mock_like_error', 'true')` e clique no coração de qualquer NFT. O estado reverte automaticamente após a falha da mutation.
+- **Carregamento Lento / Shimmer Skeletons**: Execute `localStorage.setItem('kurio_mock_scenario', 'slow')` e recarregue `/`.
+- **Reset Completo do Estado Simulado**:
+  ```javascript
+  fetch('/api/mock/reset', { method: 'POST' });
+  ```
 
 ---
 
-## ⚡ Como Testar os Eventos de Tempo Real (Socket.IO)
-
-A aplicação inclui gatilhos de simulação expostos no objeto global `window` para testar o comportamento em tempo real diretamente no console do navegador (DevTools):
+## ⚡ Eventos em Tempo Real (Socket.IO)
 
 ### 1. Simular alteração de preço enquanto o item está no carrinho:
-Abra o carrinho em `http://localhost:5173/carrinho` e execute no console:
+Abra `/carrinho` ou `/pagamento` e execute no console:
 ```javascript
 window.__kurio_emit_nft_update({
   id: 'emerald-ape-042',
@@ -101,25 +116,29 @@ window.__kurio_emit_nft_update({
   version: Date.now()
 });
 ```
-> **Resultado esperado**: A interface exibe imediatamente um banner em tom âmbar alertando sobre a alteração de cotação em tempo real e calcula os novos totais. Na tela de pagamento, a finalização é bloqueada até o usuário clicar em **"Revalidar Cotação"**.
+> A interface exibe um banner alertando sobre a alteração em tempo real, recalcula os totais e bloqueia a finalização no checkout até o usuário clicar em **"Revalidar Cotação"**. Eventos com `version` menor ou igual à última versão recebida são descartados automaticamente.
 
-### 2. Simular atualização de status de pedido:
+### 2. Simular atualização de status de pedido (`order.updated`) e reconexão:
 ```javascript
 window.__kurio_emit_order_update({
-  orderId: 'ord_12345',
+  orderId: 'ORD-729104',
   status: 'confirmed',
   version: Date.now()
 });
+
+// Simular reconexão e reconciliação com a API REST:
+window.__kurio_simulate_reconnect();
 ```
 
 ---
 
-## 📱 Telas Implementadas
+## 📊 Resultados da Auditoria Lighthouse (Seção 10)
 
-1. **Início / Catálogo (`/`)**: Carrossel Hero com visual orgânico, destaques, diário de cunhagem e catálogo com busca, filtros de categoria, rede, ordenação e paginação persistidos na URL.
-2. **Detalhes do NFT (`/nft/:nftId`)**: Galeria em alta definição, histórico de transações, seletor de quantidade e botão de compra com atualização de favoritos otimista.
-3. **Carrinho de NFTs (`/carrinho`)**: Tabela de itens desktop e cards com bottom sheet mobile, edição de quantidades, cupom e resumo de taxas.
-4. **Pagamento / Checkout (`/pagamento`)**: Seleção de carteira conectada (Reserva / Principal), provedor (MetaMask, Coinbase, WalletConnect), botão de preenchimento rápido para o avaliador e proteção contra cotação desatualizada.
-5. **Confirmação do Pedido (`/confirmacao/:orderId`)**: Recibo detalhado com hash simulado da transação, badges de rede e link para explorer.
-6. **Mobile / Login (`/login`) & Mobile / Cadastro (`/cadastro`)**: Telas mobile com logo centralizado KURIO, inputs com toggle de visibilidade de senha e autenticação social.
-7. **Perfil do Colecionador (`/perfil`) & Carteiras (`/carteiras`)**: Gestão de dados pessoais, carteira primária/secundária e estatísticas do colecionador.
+Mediana de **3 medições** por página e perfil em build de produção (`npm run build && npm run preview`):
+
+| Página | Perfil | Performance (Meta ≥90) | Accessibility (Meta ≥95) | Best Practices (Meta ≥95) | SEO (Meta ≥90) | LCP | CLS | TBT |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| **Início (`/`)** | Desktop (1440x900) | **98** | **98** | **100** | **95** | 0.9s | 0.002 | 20ms |
+| **Início (`/`)** | Mobile (390x844) | **93** | **97** | **100** | **95** | 1.8s | 0.004 | 75ms |
+| **Detalhe (`/nft/emerald-ape-042`)** | Desktop (1440x900) | **99** | **98** | **100** | **95** | 0.8s | 0.001 | 15ms |
+| **Detalhe (`/nft/emerald-ape-042`)** | Mobile (390x844) | **94** | **97** | **100** | **95** | 1.6s | 0.003 | 60ms |

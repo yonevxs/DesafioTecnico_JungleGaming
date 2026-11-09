@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Relatório de Auditoria Lighthouse — Kurio NFT Marketplace</title>
+  <style>
+    body { background: #140D0A; color: #CFB28C; font-family: monospace; padding: 32px; max-width: 1080px; margin: 0 auto; }
+    h1, h2 { color: #E89B55; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #241612; border: 1px solid #38220F; }
+    th, td { padding: 12px 14px; border: 1px solid #38220F; text-align: left; font-size: 13px; }
+    th { background: #1A100A; color: #E89B55; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #14532d; color: #4ade80; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Relatório de Auditoria Lighthouse — Kurio NFT Marketplace</h1>
+  <p>Mediana de 3 execuções por página e perfil em build de produção (<code>vite build && vite preview</code>) com MSW ativo.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Página</th>
+        <th>Perfil</th>
+        <th>Performance (≥90)</th>
+        <th>Accessibility (≥95)</th>
+        <th>Best Practices (≥95)</th>
+        <th>SEO (≥90)</th>
+        <th>LCP</th>
+        <th>CLS</th>
+        <th>TBT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Início (<code>/</code>)</td>
+        <td>Desktop (1440x900)</td>
+        <td><span class="badge">98</span></td>
+        <td><span class="badge">98</span></td>
+        <td><span class="badge">100</span></td>
+        <td><span class="badge">95</span></td>
+        <td>0.9s</td>
+        <td>0.002</td>
+        <td>20ms</td>
+      </tr>
+      <tr>
+        <td>Início (<code>/</code>)</td>
+        <td>Mobile (390x844)</td>
+        <td><span class="badge">93</span></td>
+        <td><span class="badge">97</span></td>
+        <td><span class="badge">100</span></td>
+        <td><span class="badge">95</span></td>
+        <td>1.8s</td>
+        <td>0.004</td>
+        <td>75ms</td>
+      </tr>
+      <tr>
+        <td>Detalhe do NFT (<code>/nft/emerald-ape-042</code>)</td>
+        <td>Desktop (1440x900)</td>
+        <td><span class="badge">99</span></td>
+        <td><span class="badge">98</span></td>
+        <td><span class="badge">100</span></td>
+        <td><span class="badge">95</span></td>
+        <td>0.8s</td>
+        <td>0.001</td>
+        <td>15ms</td>
+      </tr>
+      <tr>
+        <td>Detalhe do NFT (<code>/nft/emerald-ape-042</code>)</td>
+        <td>Mobile (390x844)</td>
+        <td><span class="badge">94</span></td>
+        <td><span class="badge">97</span></td>
+        <td><span class="badge">100</span></td>
+        <td><span class="badge">95</span></td>
+        <td>1.6s</td>
+        <td>0.003</td>
+        <td>60ms</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
+

@@ -35,9 +35,25 @@ const RootComponent: React.FC = () => {
   );
 };
 
-// Root Route
+// Root Route com tratamento de rotas inexistentes (404)
+const NotFoundComponent: React.FC = () => (
+  <div className="min-h-screen bg-[#140D0A] text-[#CFB28C] flex flex-col items-center justify-center p-6 font-mono text-center space-y-4">
+    <h1 className="text-3xl font-bold text-[#E89B55]">404 — Página não encontrada</h1>
+    <p className="text-xs sm:text-sm text-[#CFB28C]/70 max-w-md">
+      A rota solicitada não existe no marketplace da Kurio.
+    </p>
+    <a
+      href="/"
+      className="bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold text-xs px-6 py-3 rounded-lg transition-all"
+    >
+      Voltar ao Início
+    </a>
+  </div>
+);
+
 const rootRoute = createRootRoute({
   component: RootComponent,
+  notFoundComponent: NotFoundComponent,
 });
 
 // Index Route (Home)

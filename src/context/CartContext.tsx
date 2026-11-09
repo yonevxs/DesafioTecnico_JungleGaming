@@ -58,6 +58,7 @@ export interface CartContextType {
   applyCoupon: (code: string) => boolean;
   removeCoupon: () => void;
   clearCart: () => void;
+  removePurchasedItems: (purchased: CartItem[]) => void;
   reconfirmQuote: () => void;
   dismissQuoteAlert: () => void;
 }
@@ -241,6 +242,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setQuoteAlert(null);
   }, []);
 
+  const removePurchasedItems = useCallback((purchased: CartItem[]) => {
+    setItems((prev) => {
+      const next: CartItem[] = [];
+      for (const item of prev) {
+        const bought = purchased.find((p) => p.nft.id === item.nft.id);
+        if (!bought) {
+          next.push(item);
+        } else if (item.quantity > bought.quantity) {
+          next.push({ ...item, quantity: item.quantity - bought.quantity });
+        }
+      }
+      return next;
+    });
+    setAppliedCoupon(null);
+    setIsQuoteOutdated(false);
+    setQuoteAlert(null);
+  }, []);
+
   const reconfirmQuote = useCallback(() => {
     setIsQuoteOutdated(false);
     setQuoteAlert(null);
@@ -269,6 +288,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         applyCoupon,
         removeCoupon,
         clearCart,
+        removePurchasedItems,
         reconfirmQuote,
         dismissQuoteAlert,
       }}

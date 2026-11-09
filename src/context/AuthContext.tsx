@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { User, LoginCredentials, RegisterData } from '@/types/auth';
 import { authService } from '@/services/authService';
+import { socketService } from '@/services/socketService';
 
 interface AuthContextType {
   user: User | null;
@@ -25,6 +27,7 @@ const TOKEN_KEY = 'kurio_auth_token';
 const USER_KEY = 'kurio_auth_user';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(() => {
     try {
       return localStorage.getItem(TOKEN_KEY);
@@ -117,6 +120,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+      queryClient.clear();
+      socketService.clearSessionState();
     }
   };
 

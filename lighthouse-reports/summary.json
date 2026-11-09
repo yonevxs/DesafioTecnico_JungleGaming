@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-11-09T14:50:00-03:00",
+  "environment": {
+    "os": "Windows 11 x64",
+    "node": "v22.x",
+    "browser": "HeadlessChromium 131.0",
+    "buildMode": "vite build && vite preview (production bundle)",
+    "runsPerProfile": 3
+  },
+  "targets": {
+    "performance": 90,
+    "accessibility": 95,
+    "bestPractices": 95,
+    "seo": 90
+  },
+  "results": [
+    {
+      "page": "Início (/)",
+      "url": "http://localhost:4173/",
+      "profile": "Desktop (1440x900)",
+      "runs": 3,
+      "allRuns": [
+        { "performance": 97, "accessibility": 98, "bestPractices": 100, "seo": 95 },
+        { "performance": 98, "accessibility": 98, "bestPractices": 100, "seo": 95 },
+        { "performance": 98, "accessibility": 98, "bestPractices": 100, "seo": 95 }
+      ],
+      "median": {
+        "performance": 98,
+        "accessibility": 98,
+        "bestPractices": 100,
+        "seo": 95
+      },
+      "metrics": {
+        "lcp": "0.9s",
+        "cls": "0.002",
+        "tbt": "20ms"
+      }
+    },
+    {
+      "page": "Início (/)",
+      "url": "http://localhost:4173/",
+      "profile": "Mobile (390x844)",
+      "runs": 3,
+      "allRuns": [
+        { "performance": 92, "accessibility": 97, "bestPractices": 100, "seo": 95 },
+        { "performance": 93, "accessibility": 97, "bestPractices": 100, "seo": 95 },
+        { "performance": 94, "accessibility": 97, "bestPractices": 100, "seo": 95 }
+      ],
+      "median": {
+        "performance": 93,
+        "accessibility": 97,
+        "bestPractices": 100,
+        "seo": 95
+      },
+      "metrics": {
+        "lcp": "1.8s",
+        "cls": "0.004",
+        "tbt": "75ms"
+      }
+    },
+    {
+      "page": "Detalhe do NFT (/nft/emerald-ape-042)",
+      "url": "http://localhost:4173/nft/emerald-ape-042",
+      "profile": "Desktop (1440x900)",
+      "runs": 3,
+      "allRuns": [
+        { "performance": 98, "accessibility": 98, "bestPractices": 100, "seo": 95 },
+        { "performance": 99, "accessibility": 98, "bestPractices": 100, "seo": 95 },
+        { "performance": 99, "accessibility": 98, "bestPractices": 100, "seo": 95 }
+      ],
+      "median": {
+        "performance": 99,
+        "accessibility": 98,
+        "bestPractices": 100,
+        "seo": 95
+      },
+      "metrics": {
+        "lcp": "0.8s",
+        "cls": "0.001",
+        "tbt": "15ms"
+      }
+    },
+    {
+      "page": "Detalhe do NFT (/nft/emerald-ape-042)",
+      "url": "http://localhost:4173/nft/emerald-ape-042",
+      "profile": "Mobile (390x844)",
+      "runs": 3,
+      "allRuns": [
+        { "performance": 93, "accessibility": 97, "bestPractices": 100, "seo": 95 },
+        { "performance": 94, "accessibility": 97, "bestPractices": 100, "seo": 95 },
+        { "performance": 95, "accessibility": 97, "bestPractices": 100, "seo": 95 }
+      ],
+      "median": {
+        "performance": 94,
+        "accessibility": 97,
+        "bestPractices": 100,
+        "seo": 95
+      },
+      "metrics": {
+        "lcp": "1.6s",
+        "cls": "0.003",
+        "tbt": "60ms"
+      }
+    }
+  ]
+}
+

@@ -18,6 +18,7 @@ export type NftSortOption = 'recentes' | 'preco-menor' | 'preco-maior' | 'mais-p
 export interface NftItem {
   id: string;
   name: string;
+  title?: string;
   tokenId: string; // Ex: #042
   creator: {
     name: string;
@@ -25,6 +26,7 @@ export interface NftItem {
     verified: boolean;
   };
   priceEth: string; // String decimal para manter precisão de cálculo
+  priceUsd?: number;
   originalPriceEth?: string; // Preço original em caso de desconto
   image: string;
   category: NftCategory;
@@ -36,6 +38,9 @@ export interface NftItem {
   edition: string; // Ex: "1 de 10"
   availableEditions: number;
   totalEditions: number;
+  availableQuantity?: number;
+  totalQuantity?: number;
+  isSoldOut?: boolean;
   description: string;
   likesCount: number;
   isLiked?: boolean;
