@@ -56,16 +56,18 @@ export const BottomNavigation: React.FC = () => {
     if (isAuthenticated) {
       navigate({ to: '/perfil' });
     } else {
-      openAuthModal('login');
+      navigate({ to: '/login' });
     }
   };
 
-  // Em rotas de produto e checkout, o mobile exibe suas barras de acao dedicadas
+  // Em rotas de produto, checkout e autenticacao dedicada, o mobile oculta a bottom navigation
   if (
     currentPath.startsWith('/nft/') ||
     currentPath === '/carrinho' ||
     currentPath === '/pagamento' ||
-    currentPath.startsWith('/confirmacao')
+    currentPath.startsWith('/confirmacao') ||
+    currentPath === '/login' ||
+    currentPath === '/cadastro'
   ) {
     return null;
   }

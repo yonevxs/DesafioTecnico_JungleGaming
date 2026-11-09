@@ -99,10 +99,19 @@ export const profileAltRoute = createRoute({
   component: CollectorProfilePage,
 });
 
+import { LoginPage } from '@/pages/LoginPage';
+import { RegisterPage } from '@/pages/RegisterPage';
+
 export const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
-  component: HomePage,
+  component: LoginPage,
+});
+
+export const registerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/cadastro',
+  component: RegisterPage,
 });
 
 export const carteirasRoute = createRoute({
@@ -119,6 +128,7 @@ const routeTree = rootRoute.addChildren([
   orderConfirmationRoute,
   orderConfirmationBaseRoute,
   loginRoute,
+  registerRoute,
   profileRoute,
   profileAltRoute,
   carteirasRoute,

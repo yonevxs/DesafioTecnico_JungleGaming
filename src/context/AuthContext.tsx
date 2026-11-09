@@ -47,9 +47,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
-    // Verifica se a URL contém ?login=true para abrir o pop-up automaticamente
+    // Verifica se a URL contém ?login=true para abrir o pop-up automaticamente (apenas fora das páginas dedicadas)
     const params = new URLSearchParams(window.location.search);
-    if (params.get('login') === 'true' || window.location.pathname === '/login') {
+    if (params.get('login') === 'true' && window.location.pathname !== '/login' && window.location.pathname !== '/cadastro') {
       setIsAuthModalOpen(true);
       setAuthModalTab('login');
     }
