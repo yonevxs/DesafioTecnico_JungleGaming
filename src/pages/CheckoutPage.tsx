@@ -102,7 +102,11 @@ export const CheckoutPage: React.FC = () => {
       });
 
       clearCart();
-      navigate({ to: '/confirmacao/$orderId', params: { orderId: receipt.orderId } });
+      try {
+        navigate({ to: '/confirmacao/$orderId', params: { orderId: receipt.orderId } });
+      } catch {
+        navigate({ to: '/confirmacao' });
+      }
     } catch (err: any) {
       setErrorMessage(
         err.response?.data?.message || 'Falha ao processar o pagamento com carteira. Tente novamente.'
