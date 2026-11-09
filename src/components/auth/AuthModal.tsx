@@ -63,7 +63,7 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#140D0A]/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+    <div className="hidden md:flex fixed inset-0 z-50 bg-[#140D0A]/80 backdrop-blur-sm items-center justify-center p-4 animate-in fade-in duration-200">
       
       {/* Container do Card Modal (Figma Print 1) */}
       <div className="w-full max-w-[460px] bg-[#241612] border border-[#38220F] rounded-2xl relative shadow-2xl flex flex-col overflow-hidden font-mono text-[#CFB28C] animate-in zoom-in-95 duration-200">

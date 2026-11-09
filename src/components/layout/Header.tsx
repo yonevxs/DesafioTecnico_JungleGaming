@@ -71,6 +71,19 @@ export const Header: React.FC<HeaderProps> = ({
     navigate({ to: '/carrinho' });
   };
 
+  const handleLoginClick = () => {
+    setMobileMenuOpen(false);
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      navigate({ to: '/login' });
+    } else {
+      if (onLoginClick) {
+        onLoginClick();
+      } else {
+        openAuthModal('login');
+      }
+    }
+  };
+
   // Determina qual item de navegação está ativo
   const isMercadoActive = currentPath.startsWith('/nft') || currentPath === '/carrinho' || currentPath === '/pagamento' || currentPath.startsWith('/confirmacao');
   const isInicioActive = currentPath === '/' && !isMercadoActive;
@@ -257,7 +270,7 @@ export const Header: React.FC<HeaderProps> = ({
           ) : (
             <button
               type="button"
-              onClick={() => openAuthModal('login')}
+              onClick={handleLoginClick}
               className="flex items-center gap-2 bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md shadow-[#D28A4C]/10 font-mono cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
@@ -346,11 +359,8 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <button
                 type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openAuthModal('login');
-                }}
-                className="w-full bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold py-2.5 rounded-lg text-center"
+                onClick={handleLoginClick}
+                className="w-full bg-[#D28A4C] hover:bg-[#E89B55] text-[#140D0A] font-bold py-2.5 rounded-lg text-center cursor-pointer"
               >
                 Entrar
               </button>

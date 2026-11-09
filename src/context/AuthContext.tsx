@@ -121,6 +121,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const openAuthModal = (tab: 'login' | 'register' = 'login') => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      const target = tab === 'register' ? '/cadastro' : '/login';
+      if (window.location.pathname !== target) {
+        window.location.href = target;
+      }
+      return;
+    }
     setAuthModalTab(tab);
     setIsAuthModalOpen(true);
   };
